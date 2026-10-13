@@ -135,7 +135,7 @@ td{padding:6px 10px;vertical-align:middle}
     </button>
   </div>
   <div class="meta" id="meta">Loading buylist…</div>
-  <div class="chicago-notice">📍 <strong>Chicago area only</strong> — Cards we are buying at 80-85% cash or 90% consignment, updated daily. Simply search or locate cards on the list that you want to sell, generate a list and receive a quote within minutes.</div>
+  <div class="chicago-notice">📍 <strong>Chicago area only</strong> — Cards we are buying at 80–85% cash or 90% consignment, updated daily. Simply search or locate cards on the list that you want to sell, generate a list and receive a quote within minutes.</div>
 
   <div class="stats">
     <div class="stat"><div class="stat-val" id="disp-cards">—</div><div class="stat-label">Cards</div></div>
@@ -415,10 +415,14 @@ function applyFilters(fromHeader) {
 }
 
 // ─── TABLE RENDER ────────────────────────────
+// Store rendered rows for lookup by index
+let _renderedRows = [];
+
 function renderTable(rows, sk) {
+  _renderedRows = rows;
   const grouped = ['set-num','set','num'].includes(sk) || !sk;
-  let prevSet = null, html = '';
-  rows.forEach(r => {
+  let prevSet = null, h = '';
+  rows.forEach((r, idx) => {
     const isFirst = grouped && r.set !== prevSet;
     if (grouped) prevSet = r.set;
     const setCell = grouped ? (isFirst ? `<span class="set-label">${esc(r.set)}</span>` : '') : `<span class="set-label">${esc(r.set)}</span>`;
@@ -427,8 +431,7 @@ function renderTable(rows, sk) {
     const pw = r.price>=100?'700':'400';
     const ps = r.price>0 ? '$'+r.price.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—';
     const qc = r.qty>=10?'var(--green)':r.qty>=5?'var(--gold)':'var(--text)';
-    const rj = JSON.stringify(r).replace(/'/g,"\\'");
-    html += `<tr${dc}>
+    h += `<tr${dc}>
       <td class="td-set">${setCell}</td>
       <td class="td-num">${r.num||'—'}</td>
       <td class="td-name">${esc(r.name)}</td>
@@ -437,12 +440,12 @@ function renderTable(rows, sk) {
       <td class="td-add">
         <div class="add-row">
           <input class="qty-input" type="number" min="1" max="${r.qty||99}" value="1">
-          <button class="add-btn" onclick="addToCart(${rj},this.previousElementSibling,this)">+ Add</button>
+          <button class="add-btn" data-idx="${idx}" onclick="addToCartByIdx(this)">+ Add</button>
         </div>
       </td>
     </tr>`;
   });
-  document.getElementById('tbody').innerHTML = html;
+  document.getElementById('tbody').innerHTML = h;
 }
 
 // ─── CART ────────────────────────────────────
@@ -457,6 +460,14 @@ function showMaxAlert(btn, max) {
   btn.parentNode.appendChild(a);
   clearTimeout(btn._alertTimer);
   btn._alertTimer = setTimeout(() => a.remove(), 2000);
+}
+
+function addToCartByIdx(btn) {
+  const idx = parseInt(btn.getAttribute('data-idx'));
+  const r = _renderedRows[idx];
+  if (!r) return;
+  const inp = btn.previousElementSibling;
+  addToCart(r, inp, btn);
 }
 
 function addToCart(r, inp, btn) {
