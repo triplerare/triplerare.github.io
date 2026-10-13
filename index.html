@@ -9,104 +9,239 @@
   --bg:#0d0f14; --surface:#141720; --surface2:#1c2030;
   --border:#2a2f45; --blue:#4f8ef7; --gold:#f5c842;
   --text:#e2e8f0; --muted:#8892a4; --green:#3ecf7a;
-  --yellow:#f5a623; --red:#f74f4f;
+  --yellow:#f5a623; --red:#f74f4f; --purple:#a78bfa;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;padding:20px;font-size:13px}
-h1{color:var(--gold);font-size:20px;margin-bottom:4px}
-.meta{color:var(--muted);font-size:12px;margin-bottom:18px}
-.stats{display:flex;gap:14px;margin-bottom:18px;flex-wrap:wrap}
-.stat{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 18px}
-.stat-val{font-size:22px;font-weight:800;color:var(--blue);font-family:monospace}
-.stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
-.legend{display:flex;gap:16px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
-.leg{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
-.dot{width:10px;height:10px;border-radius:50%}
-.controls{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
-input,select{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:8px;font-size:13px;outline:none}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px}
+/* LAYOUT */
+.app{display:flex;min-height:100vh}
+.main-col{flex:1;min-width:0;padding:20px;overflow-y:auto}
+.cart-col{width:340px;background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow:hidden}
+@media(max-width:800px){.app{flex-direction:column}.cart-col{width:100%;height:auto;position:relative;border-left:none;border-top:1px solid var(--border)}}
+/* HEADER */
+h1{color:var(--gold);font-size:19px;margin-bottom:3px}
+.meta{color:var(--muted);font-size:11px;margin-bottom:16px}
+/* STATS */
+.stats{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 16px}
+.stat-val{font-size:20px;font-weight:800;color:var(--blue);font-family:monospace}
+.stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+/* LEGEND */
+.legend{display:flex;gap:14px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
+.leg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
+.dot{width:9px;height:9px;border-radius:50%}
+/* CONTROLS */
+.controls{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+input,select{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:7px 11px;border-radius:7px;font-size:12px;outline:none}
 input:focus,select:focus{border-color:var(--blue)}
-#search{width:260px}
-select{cursor:pointer;padding-right:28px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238892a4' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
-#set-filter{min-width:200px;max-width:320px}
-#sort-select{min-width:180px}
-.ctrl-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-right:4px}
-#match-count{font-size:12px;color:var(--muted)}
+#search{width:230px}
+select{cursor:pointer;padding-right:26px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238892a4' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center}
+#set-filter{min-width:180px;max-width:280px}
+#sort-select{min-width:160px}
+.ctrl-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+#match-count{font-size:11px;color:var(--muted)}
+/* TABLE */
 .table-wrap{border:1px solid var(--border);border-radius:10px;overflow:hidden;overflow-x:auto}
 table{width:100%;border-collapse:collapse}
-thead th{background:var(--surface2);color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;padding:9px 12px;text-align:left;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:2;cursor:pointer;user-select:none;white-space:nowrap}
+thead th{background:var(--surface2);color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;padding:8px 10px;text-align:left;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:2;cursor:pointer;user-select:none;white-space:nowrap}
 thead th:hover{color:var(--text)}
 thead th.sorted{color:var(--blue)}
-thead th .arr{margin-left:4px;opacity:.5;font-size:10px}
-thead th.sorted .arr{opacity:1}
 th.right{text-align:right}
+th.center{text-align:center}
 tbody tr{border-bottom:1px solid rgba(42,47,69,0.3);transition:background .1s}
-tbody tr:hover td{background:rgba(79,142,247,0.05)}
+tbody tr:hover td{background:rgba(79,142,247,0.04)}
 tbody tr.set-divider td{border-top:1px solid var(--border)}
-td{padding:7px 12px;vertical-align:middle}
-.td-set{width:28%;font-size:12px}
+td{padding:6px 10px;vertical-align:middle}
+.td-set{width:24%;font-size:11px}
 .set-label{color:var(--blue);font-weight:600}
-.td-num{font-family:monospace;font-size:12px;color:var(--gold);width:100px;white-space:nowrap}
-.td-name{color:var(--text)}
-.td-price{font-family:monospace;text-align:right;width:90px;white-space:nowrap}
-.td-qty{font-family:monospace;font-weight:700;text-align:right;width:70px}
+.td-num{font-family:monospace;font-size:11px;color:var(--gold);width:90px;white-space:nowrap}
+.td-name{color:var(--text);font-size:12px}
+.td-price{font-family:monospace;text-align:right;width:85px;white-space:nowrap;font-size:12px}
+.td-qty{font-family:monospace;font-weight:700;text-align:right;width:60px;font-size:12px}
+.td-add{width:90px;text-align:center}
+/* ADD CONTROLS */
+.add-row{display:flex;align-items:center;gap:4px;justify-content:center}
+.qty-input{width:42px;text-align:center;padding:4px 6px;font-size:12px;border-radius:5px;background:var(--surface2);border:1px solid var(--border);color:var(--text)}
+.add-btn{background:var(--blue);color:#fff;border:none;padding:4px 10px;border-radius:5px;cursor:pointer;font-size:11px;font-weight:600;transition:opacity .15s;white-space:nowrap}
+.add-btn:hover{opacity:.85}
+.add-btn.in-cart{background:var(--green);color:#0d1a10}
 .no-results{padding:40px;text-align:center;color:var(--muted)}
+.max-alert{position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);background:#f74f4f;color:#fff;font-size:10px;font-weight:600;padding:4px 8px;border-radius:5px;white-space:nowrap;z-index:10;pointer-events:none;animation:fadeInUp .15s ease}
+.add-row{position:relative}
+@keyframes fadeInUp{from{opacity:0;transform:translateX(-50%) translateY(4px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.payout-toggle{display:flex;gap:0;background:var(--surface2);border:1px solid var(--border);border-radius:7px;overflow:hidden;margin-bottom:10px}
+.payout-opt{flex:1;padding:6px 8px;border:none;cursor:pointer;font-size:11px;font-weight:600;background:transparent;color:var(--muted);transition:all .15s;text-align:center}
+.payout-opt.active{background:var(--blue);color:#fff}
+.payout-opt.active.cash{background:var(--green);color:#0d1a10}
+.price-breakdown{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:10px 12px;margin-bottom:10px;font-size:12px}
+.pb-row{display:flex;justify-content:space-between;align-items:center;padding:3px 0}
+.pb-label{color:var(--muted);font-size:11px}
+.pb-val{font-family:monospace;font-weight:700}
+/* CART */
+.cart-header{padding:14px 16px 10px;border-bottom:1px solid var(--border)}
+.cart-title{font-size:14px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px}
+.cart-badge{background:var(--blue);color:#fff;border-radius:20px;padding:1px 7px;font-size:11px;font-weight:700}
+.cart-scroll{flex:1;overflow-y:auto;padding:8px}
+.cart-empty{padding:32px 16px;text-align:center;color:var(--muted);font-size:12px}
+.cart-item{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:7px;background:var(--surface2);margin-bottom:6px;border:1px solid var(--border)}
+.ci-name{flex:1;min-width:0}
+.ci-card{font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ci-set{font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ci-qty-wrap{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.ci-qty-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);width:20px;height:20px;border-radius:4px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;line-height:1;padding:0}
+.ci-qty-btn:hover{border-color:var(--blue);color:var(--blue)}
+.ci-qty{font-family:monospace;font-size:12px;min-width:20px;text-align:center;color:var(--text)}
+.ci-price{font-family:monospace;font-size:11px;color:var(--gold);flex-shrink:0}
+.ci-remove{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;line-height:1;padding:0 2px;flex-shrink:0}
+.ci-remove:hover{color:var(--red)}
+.cart-footer{padding:12px 16px;border-top:1px solid var(--border)}
+.cart-total{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.total-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.total-val{font-family:monospace;font-size:16px;font-weight:800;color:var(--green)}
+.cart-note{font-size:10px;color:var(--muted);margin-bottom:10px;line-height:1.4}
+.btn-export{width:100%;padding:9px;border-radius:7px;border:none;cursor:pointer;font-size:12px;font-weight:700;margin-bottom:7px;transition:opacity .15s}
+.btn-export:hover{opacity:.88}
+.btn-csv{background:var(--blue);color:#fff}
+.btn-submit{background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);color:#fff;font-size:13px;padding:11px}
+.btn-clear{background:var(--surface2);border:1px solid var(--border);color:var(--muted);width:100%;padding:7px;border-radius:7px;cursor:pointer;font-size:11px}
+.btn-clear:hover{color:var(--red);border-color:var(--red)}
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;width:480px;max-width:92vw;max-height:88vh;overflow-y:auto}
+.modal h2{font-size:16px;font-weight:700;margin-bottom:6px;color:var(--text)}
+.modal .sub{font-size:12px;color:var(--muted);margin-bottom:18px}
+.modal-list{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px;max-height:200px;overflow-y:auto;margin-bottom:16px;font-size:12px;font-family:monospace;color:var(--text);line-height:1.7;white-space:pre}
+.contact-btns{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.contact-btn{flex:1;padding:10px;border-radius:8px;border:none;cursor:pointer;font-size:12px;font-weight:700;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;transition:opacity .15s}
+.contact-btn:hover{opacity:.85}
+.btn-ig{background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);color:#fff}
+.btn-dc{background:#5865F2;color:#fff}
+.modal-close{width:100%;padding:9px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;font-size:12px}
+.modal-close:hover{color:var(--text)}
+.copy-btn{background:var(--surface2);border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:5px;cursor:pointer;font-size:11px;float:right;margin-top:-2px}
+.copy-btn:hover{color:var(--text)}
+.copy-btn.copied{color:var(--green);border-color:var(--green)}
 </style>
 </head>
 <body>
-<h1>🎴 TripleRare Buylist</h1>
-<div class="meta">Oct 13, 2026 · Market prices subject to change</div>
-<div class="stats">
-  <div class="stat"><div class="stat-val" id="disp-cards">863</div><div class="stat-label">Cards Shown</div></div>
-  <div class="stat"><div class="stat-val" id="disp-sets">99</div><div class="stat-label">Sets</div></div>
-  <div class="stat"><div class="stat-val" id="disp-value">—</div><div class="stat-label">Total Market Value</div></div>
-</div>
-<div class="legend">
-  <div class="leg"><div class="dot" style="background:var(--green)"></div>Qty 10+</div>
-  <div class="leg"><div class="dot" style="background:var(--gold)"></div>Qty 5–9</div>
-  <div class="leg"><div class="dot" style="background:var(--text)"></div>Qty 1–4</div>
-  <span style="margin-left:8px;width:1px;height:14px;background:var(--border);display:inline-block"></span>
-  <div class="leg"><span style="color:var(--red);font-family:monospace;font-weight:700;font-size:12px">$500+</span>&nbsp;High value</div>
-  <div class="leg"><span style="color:var(--yellow);font-family:monospace;font-weight:700;font-size:12px">$100+</span>&nbsp;Premium</div>
-</div>
-<div class="controls">
-  <input id="search" type="text" placeholder="Search card, set, or number…" oninput="applyFilters()">
-  <div>
-    <span class="ctrl-label">Set:</span>
-    <select id="set-filter" onchange="applyFilters()">
-      <option value="">All Sets</option>
-    </select>
+<div class="app">
+
+<!-- MAIN COLUMN -->
+<div class="main-col">
+  <h1>🎴 TripleRare Buylist</h1>
+  <div class="meta">Oct 13, 2026 · Market prices subject to change · Add cards to your list, then submit for a quote</div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-val" id="disp-cards">863</div><div class="stat-label">Cards Shown</div></div>
+    <div class="stat"><div class="stat-val" id="disp-sets">99</div><div class="stat-label">Sets</div></div>
+    <div class="stat"><div class="stat-val" id="disp-value">—</div><div class="stat-label">Total Market Value</div></div>
   </div>
-  <div>
-    <span class="ctrl-label">Sort:</span>
-    <select id="sort-select" onchange="applyFilters()">
-      <option value="set-num">Set &amp; Number</option>
-      <option value="price-desc">Price: High → Low</option>
-      <option value="price-asc">Price: Low → High</option>
-      <option value="qty-desc">Qty: High → Low</option>
-      <option value="name-asc">Name: A → Z</option>
-    </select>
+
+  <div class="legend">
+    <div class="leg"><div class="dot" style="background:var(--green)"></div>Qty 10+</div>
+    <div class="leg"><div class="dot" style="background:var(--gold)"></div>Qty 5–9</div>
+    <div class="leg"><div class="dot" style="background:var(--text)"></div>Qty 1–4</div>
+    <span style="margin-left:6px;width:1px;height:13px;background:var(--border);display:inline-block"></span>
+    <div class="leg"><span style="color:var(--red);font-family:monospace;font-weight:700;font-size:11px">$500+</span>&nbsp;High value</div>
+    <div class="leg"><span style="color:var(--yellow);font-family:monospace;font-weight:700;font-size:11px">$100+</span>&nbsp;Premium</div>
   </div>
-  <span id="match-count"></span>
+
+  <div class="controls">
+    <input id="search" type="text" placeholder="Search card, set, or number…" oninput="applyFilters()">
+    <div><span class="ctrl-label">Set: </span>
+      <select id="set-filter" onchange="applyFilters()"><option value="">All Sets</option></select>
+    </div>
+    <div><span class="ctrl-label">Sort: </span>
+      <select id="sort-select" onchange="applyFilters()">
+        <option value="set-num">Set &amp; Number</option>
+        <option value="price-desc">Price: High → Low</option>
+        <option value="price-asc">Price: Low → High</option>
+        <option value="qty-desc">Qty: High → Low</option>
+        <option value="name-asc">Name: A → Z</option>
+      </select>
+    </div>
+    <span id="match-count"></span>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th onclick="cycleSortCol('set')">Set<span class="arr"> ↕</span></th>
+          <th onclick="cycleSortCol('num')">Number<span class="arr"> ↕</span></th>
+          <th onclick="cycleSortCol('name')">Card Name<span class="arr"> ↕</span></th>
+          <th class="right" onclick="cycleSortCol('price')">Market Price<span class="arr"> ↕</span></th>
+          <th class="right" onclick="cycleSortCol('qty')">Max Qty<span class="arr"> ↕</span></th>
+          <th class="center">Add to List</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <div class="no-results" id="no-results" style="display:none">No cards match your search.</div>
+  </div>
 </div>
-<div class="table-wrap">
-  <table>
-    <thead>
-      <tr>
-        <th class="th-set" onclick="cycleSortCol('set')">Set<span class="arr">↕</span></th>
-        <th onclick="cycleSortCol('num')">Number<span class="arr">↕</span></th>
-        <th onclick="cycleSortCol('name')">Card Name<span class="arr">↕</span></th>
-        <th class="right" onclick="cycleSortCol('price')">Market Price<span class="arr">↕</span></th>
-        <th class="right" onclick="cycleSortCol('qty')">Max Qty<span class="arr">↕</span></th>
-      </tr>
-    </thead>
-    <tbody id="tbody"></tbody>
-  </table>
-  <div class="no-results" id="no-results" style="display:none">No cards match your search.</div>
+
+<!-- CART COLUMN -->
+<div class="cart-col">
+  <div class="cart-header">
+    <div class="cart-title">
+      📋 My Sell List
+      <span class="cart-badge" id="cart-badge">0</span>
+    </div>
+  </div>
+  <div class="cart-scroll" id="cart-scroll">
+    <div class="cart-empty" id="cart-empty">Add cards from the list to get started.</div>
+  </div>
+  <div class="cart-footer">
+    <div class="payout-toggle">
+      <button class="payout-opt active" id="opt-consign" onclick="setPayoutMode('consign')">📈 Consignment (90%)</button>
+      <button class="payout-opt cash" id="opt-cash" onclick="setPayoutMode('cash')">💵 Cash Upfront (85%)</button>
+    </div>
+    <div class="price-breakdown" id="price-breakdown">
+      <div class="pb-row"><span class="pb-label">Est. Market Value</span><span class="pb-val" id="pb-market">$0.00</span></div>
+      <div class="pb-row" style="border-top:1px solid var(--border);margin-top:4px;padding-top:6px"><span class="pb-label" id="pb-payout-label">Est. Payout (90%)</span><span class="pb-val" style="color:var(--green)" id="pb-payout">$0.00</span></div>
+    </div>
+    <div class="cart-note">💡 Consignment = we sell for you, higher payout. Cash = instant payment. Final quote confirmed by TripleRare.</div>
+    <button class="btn-export btn-csv" onclick="exportCSV()">⬇ Download CSV</button>
+    <button class="btn-export btn-submit" onclick="openModal()">🚀 Submit for Quote</button>
+    <button class="btn-clear" onclick="clearCart()">✕ Clear list</button>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<!-- SUBMIT MODAL -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <h2>🎴 Submit Your Sell List</h2>
+    <div class="sub">Your list is ready! Copy it below and send via Instagram or Discord to get your quote.</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+      <span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Your List</span>
+      <button class="copy-btn" id="copy-list-btn" onclick="copyList()">Copy</button>
+    </div>
+    <div class="modal-list" id="modal-list"></div>
+    <div class="contact-btns">
+      <a class="contact-btn btn-ig" id="ig-btn" href="#" target="_blank" onclick="return openIG()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        DM @LegalRips
+      </a>
+      <a class="contact-btn btn-dc" id="dc-btn" href="https://discord.gg/NuYQhfZFAD" target="_blank">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.03.056a19.9 19.9 0 0 0 5.993 3.03.077.077 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+        @L33GALITY
+      </a>
+    </div>
+    <button class="btn-export btn-csv" onclick="exportCSV();closeModal()" style="margin-bottom:8px">⬇ Download CSV to attach</button>
+    <button class="modal-close" onclick="closeModal()">Close</button>
+  </div>
 </div>
 
 <script>
 const ALL_RECORDS = [{"set": "Alternate Art Promos (PR)", "num": "24a/119", "name": "M Manectric EX", "qty": 1, "price": 12.74}, {"set": "Alternate Art Promos (PR)", "num": "75a/98", "name": "Hex Maniac", "qty": 4, "price": 126.51}, {"set": "Alternate Art Promos (PR)", "num": "143a/236", "name": "Togepi & Cleffa & Igglybuff GX", "qty": 3, "price": 293.96}, {"set": "Ancient Origins (AOR)", "num": "XY", "name": "Gyarados (21)", "qty": 4, "price": 64.89}, {"set": "BREAKpoint (BKP)", "num": "XY", "name": "Drowzee", "qty": 26, "price": 0.13}, {"set": "BREAKthrough (BKT)", "num": "XY", "name": "Froakie", "qty": 10, "price": 0.25}, {"set": "Base Set (BS)", "num": "", "name": "Alakazam", "qty": 1, "price": 70.81}, {"set": "Base Set (BS)", "num": "", "name": "Pikachu", "qty": 2, "price": 11.19}, {"set": "Base Set (BS)", "num": "", "name": "Abra", "qty": 11, "price": 1.54}, {"set": "Battle Academy 2022 (BA22)", "num": "", "name": "Pikachu V", "qty": 4, "price": 4.8}, {"set": "Celebrations (CLB)", "num": "", "name": "Mew (Secret)", "qty": 17, "price": 63.55}, {"set": "Celebrations (CLB)", "num": "", "name": "Flying Pikachu VMAX", "qty": 13, "price": 5.83}, {"set": "Celebrations (CLB)", "num": "", "name": "Flying Pikachu V", "qty": 22, "price": 3.67}, {"set": "Celebrations (CLB)", "num": "", "name": "Mew", "qty": 116, "price": 2.98}, {"set": "Celebrations (CLB)", "num": "", "name": "Professor's Research (Full Art)", "qty": 1, "price": 0.93}, {"set": "Celebrations (CLB)", "num": "", "name": "Reshiram", "qty": 92, "price": 0.34}, {"set": "Celebrations (CLB)", "num": "", "name": "Zekrom", "qty": 70, "price": 0.33}, {"set": "Celebrations (CLB)", "num": "", "name": "Dialga", "qty": 8, "price": 0.27}, {"set": "Celebrations: Classic Collection (CCC)", "num": "", "name": "Charizard", "qty": 24, "price": 144.54}, {"set": "Celebrations: Classic Collection (CCC)", "num": "", "name": "Zekrom", "qty": 11, "price": 13.73}, {"set": "Celebrations: Classic Collection (CCC)", "num": "", "name": "Gardevoir ex (Delta Species)", "qty": 6, "price": 9.42}, {"set": "Celebrations: Classic Collection (CCC)", "num": "", "name": "Dark Gyarados", "qty": 5, "price": 4.97}, {"set": "Celebrations: Classic Collection (CCC)", "num": "", "name": "Rocket's Zapdos", "qty": 35, "price": 3.31}, {"set": "Celebrations: Classic Collection (CCC)", "num": "", "name": "Team Magma's Groudon", "qty": 13, "price": 1.77}, {"set": "Celebrations: Classic Collection (CCC)", "num": "", "name": "Here Comes Team Rocket!", "qty": 5, "price": 1.01}, {"set": "Celestial Storm (CES)", "num": "SM", "name": "Lisia (Full Art)", "qty": 4, "price": 207.57}, {"set": "Celestial Storm (CES)", "num": "SM", "name": "Rayquaza GX", "qty": 1, "price": 36.46}, {"set": "Champion's Path (CHP)", "num": "", "name": "Charizard V (Secret)", "qty": 1, "price": 258.2}, {"set": "Champion's Path (CHP)", "num": "", "name": "Drednaw VMAX (Secret)", "qty": 11, "price": 6.67}, {"set": "Champion's Path (CHP)", "num": "", "name": "Gardevoir V (Full Art)", "qty": 29, "price": 4.23}, {"set": "Champion's Path (CHP)", "num": "", "name": "Lucario V", "qty": 24, "price": 3.63}, {"set": "Champion's Path (CHP)", "num": "", "name": "Wailord V", "qty": 19, "price": 1.73}, {"set": "Champion's Path (CHP)", "num": "", "name": "Galarian Cursola V (Full Art)", "qty": 73, "price": 1.62}, {"set": "Champion's Path (CHP)", "num": "", "name": "Drednaw V (Full Art)", "qty": 15, "price": 1.28}, {"set": "Champion's Path (CHP)", "num": "", "name": "Grapploct V", "qty": 16, "price": 0.76}, {"set": "Cosmic Eclipse (SM12)", "num": "SM", "name": "Pikachu (Secret)", "qty": 3, "price": 223.63}, {"set": "Cosmic Eclipse (SM12)", "num": "SM", "name": "Reshiram & Zekrom GX", "qty": 8, "price": 98.38}, {"set": "Cosmic Eclipse (SM12)", "num": "SM", "name": "Mimikyu (Secret)", "qty": 15, "price": 71.39}, {"set": "Cosmic Eclipse (SM12)", "num": "SM", "name": "Koffing (Secret)", "qty": 8, "price": 38.49}, {"set": "Cosmic Eclipse (SM12)", "num": "SM", "name": "Mega Lopunny & Jigglypuff GX", "qty": 7, "price": 31.39}, {"set": "Cosmic Eclipse (SM12)", "num": "SM", "name": "Arceus & Dialga & Palkia GX", "qty": 16, "price": 27.83}, {"set": "Cosmic Eclipse (SM12)", "num": "SM", "name": "Vileplume GX", "qty": 5, "price": 20.01}, {"set": "Cosmic Eclipse (SM12)", "num": "SM", "name": "Naganadel & Guzzlord GX", "qty": 31, "price": 11.39}, {"set": "Crimson Invasion (SM04)", "num": "SM", "name": "Gyarados GX", "qty": 12, "price": 20.0}, {"set": "Crown Zenith (CRZ)", "num": "", "name": "Friends in Sinnoh (Full Art)", "qty": 20, "price": 7.52}, {"set": "Crown Zenith (CRZ)", "num": "", "name": "Charizard V", "qty": 17, "price": 7.24}, {"set": "Crown Zenith (CRZ)", "num": "", "name": "Mew V", "qty": 29, "price": 6.92}, {"set": "Crown Zenith (CRZ)", "num": "", "name": "Friends in Hisui (Full Art)", "qty": 7, "price": 6.01}, {"set": "Crown Zenith (CRZ)", "num": "", "name": "Ditto", "qty": 9, "price": 2.91}, {"set": "Crown Zenith (CRZ)", "num": "", "name": "Glaceon V", "qty": 40, "price": 2.62}, {"set": "Crown Zenith (CRZ)", "num": "", "name": "Hatterene VMAX", "qty": 52, "price": 1.98}, {"set": "Crown Zenith (CRZ)", "num": "", "name": "Zacian VSTAR", "qty": 4, "price": 1.55}, {"set": "Crown Zenith (CRZ)", "num": "", "name": "Rotom VSTAR", "qty": 14, "price": 1.45}, {"set": "Crown Zenith (CRZ)", "num": "", "name": "Rotom V", "qty": 26, "price": 0.87}, {"set": "Crown Zenith (CRZ)", "num": "", "name": "Radiant Charjabug", "qty": 9, "price": 0.65}, {"set": "Crown Zenith (CRZ)", "num": "", "name": "Sky Seal Stone", "qty": 5, "price": 0.31}, {"set": "Crown Zenith (CRZ)", "num": "", "name": "Wailord", "qty": 18, "price": 0.24}, {"set": "Crown Zenith (CRZ)", "num": "", "name": "Galarian Meowth", "qty": 5, "price": 0.18}, {"set": "Crown Zenith (CRZ)", "num": "", "name": "Friends in Sinnoh", "qty": 13, "price": 0.12}, {"set": "Crown Zenith (CRZ)", "num": "", "name": "Exeggcute", "qty": 48, "price": 0.08}, {"set": "Crown Zenith: Galarian Gallery (CRZ:GG)", "num": "", "name": "Mewtwo VSTAR", "qty": 26, "price": 239.5}, {"set": "Crown Zenith: Galarian Gallery (CRZ:GG)", "num": "", "name": "Origin Forme Dialga VSTAR (Secret)", "qty": 19, "price": 121.83}, {"set": "Crown Zenith: Galarian Gallery (CRZ:GG)", "num": "", "name": "Darkrai VSTAR", "qty": 26, "price": 85.55}, {"set": "Crown Zenith: Galarian Gallery (CRZ:GG)", "num": "", "name": "Glaceon VSTAR", "qty": 3, "price": 64.93}, {"set": "Crown Zenith: Galarian Gallery (CRZ:GG)", "num": "", "name": "Deoxys VMAX", "qty": 9, "price": 55.89}, {"set": "Crown Zenith: Galarian Gallery (CRZ:GG)", "num": "", "name": "Hisuian Zoroark VSTAR", "qty": 6, "price": 47.08}, {"set": "Crown Zenith: Galarian Gallery (CRZ:GG)", "num": "", "name": "Electivire", "qty": 16, "price": 8.88}, {"set": "Crown Zenith: Galarian Gallery (CRZ:GG)", "num": "", "name": "Melony", "qty": 12, "price": 8.1}, {"set": "Crown Zenith: Galarian Gallery (CRZ:GG)", "num": "", "name": "Absol", "qty": 23, "price": 8.05}, {"set": "Crown Zenith: Galarian Gallery (CRZ:GG)", "num": "", "name": "Hatterene VMAX", "qty": 12, "price": 7.81}, {"set": "Crown Zenith: Galarian Gallery (CRZ:GG)", "num": "", "name": "Hisuian Goodra", "qty": 2, "price": 4.73}, {"set": "Crown Zenith: Galarian Gallery (CRZ:GG)", "num": "", "name": "Colress's Experiment", "qty": 4, "price": 3.5}, {"set": "Crown Zenith: Galarian Gallery (CRZ:GG)", "num": "", "name": "Hisuian Voltorb", "qty": 15, "price": 2.97}, {"set": "Crown Zenith: Galarian Gallery (CRZ:GG)", "num": "", "name": "Comfey", "qty": 4, "price": 2.28}, {"set": "Detective Pikachu (DEP)", "num": "", "name": "Detective Pikachu", "qty": 8, "price": 15.81}, {"set": "Detective Pikachu (DEP)", "num": "", "name": "Greninja", "qty": 4, "price": 10.67}, {"set": "Detective Pikachu (DEP)", "num": "", "name": "Magikarp (Holo Common)", "qty": 41, "price": 0.99}, {"set": "Dragon Majesty (DRM)", "num": "", "name": "Charmeleon", "qty": 23, "price": 0.89}, {"set": "Dragons Exalted (DRX)", "num": "", "name": "Rayquaza EX", "qty": 17, "price": 37.4}, {"set": "Evolutions (EVO)", "num": "XY", "name": "M Blastoise EX (Full Art)", "qty": 4, "price": 66.54}, {"set": "Evolutions (EVO)", "num": "XY", "name": "M Charizard EX", "qty": 8, "price": 40.42}, {"set": "Evolutions (EVO)", "num": "XY", "name": "Misty's Determination (Full Art)", "qty": 12, "price": 34.16}, {"set": "Evolutions (EVO)", "num": "XY", "name": "M Blastoise EX", "qty": 5, "price": 19.62}, {"set": "Evolutions (EVO)", "num": "XY", "name": "M Pidgeot EX (Full Art)", "qty": 1, "price": 13.98}, {"set": "Evolutions (EVO)", "num": "XY", "name": "M Venusaur EX", "qty": 1, "price": 12.31}, {"set": "Evolutions (EVO)", "num": "XY", "name": "M Slowbro EX", "qty": 4, "price": 8.92}, {"set": "Evolutions (EVO)", "num": "XY", "name": "Gyarados", "qty": 1, "price": 8.51}, {"set": "Evolutions (EVO)", "num": "XY", "name": "Raichu", "qty": 12, "price": 8.45}, {"set": "Evolutions (EVO)", "num": "XY", "name": "Mewtwo", "qty": 26, "price": 3.42}, {"set": "Evolutions (EVO)", "num": "XY", "name": "Magikarp", "qty": 33, "price": 0.27}, {"set": "Evolutions (EVO)", "num": "XY", "name": "Poliwag", "qty": 31, "price": 0.24}, {"set": "Evolutions (EVO)", "num": "XY", "name": "Magnemite", "qty": 46, "price": 0.07}, {"set": "First Partner Collection 2026", "num": "056", "name": "Torchic", "qty": 13, "price": 5.95}, {"set": "First Partner Collection 2026", "num": "057", "name": "Mudkip", "qty": 13, "price": 11.42}, {"set": "First Partner Collection 2026", "num": "058", "name": "Chespin", "qty": 31, "price": 2.6}, {"set": "First Partner Collection 2026", "num": "059", "name": "Fennekin", "qty": 25, "price": 3.48}, {"set": "First Partner Collection 2026", "num": "061", "name": "Sprigatito", "qty": 14, "price": 5.15}, {"set": "First Partner Collection 2026", "num": "063", "name": "Quaxly", "qty": 32, "price": 2.84}, {"set": "Generations (GEN)", "num": "", "name": "Magikarp", "qty": 16, "price": 0.71}, {"set": "Generations: Radiant Collection (GEN)", "num": "", "name": "Sylveon EX (Full Art)", "qty": 1, "price": 185.41}, {"set": "Generations: Radiant Collection (GEN)", "num": "", "name": "M Gardevoir EX (Full Art)", "qty": 7, "price": 108.83}, {"set": "Generations: Radiant Collection (GEN)", "num": "", "name": "Flareon EX", "qty": 2, "price": 86.41}, {"set": "Guardians Rising (SM02)", "num": "SM", "name": "Mallow (Full Art)", "qty": 2, "price": 35.73}, {"set": "Guardians Rising (SM02)", "num": "SM", "name": "Blissey", "qty": 4, "price": 2.15}, {"set": "Hidden Fates (HIF)", "num": "", "name": "Mewtwo GX", "qty": 11, "price": 9.4}, {"set": "Hidden Fates (HIF)", "num": "", "name": "Gyarados GX", "qty": 15, "price": 6.86}, {"set": "Hidden Fates (HIF)", "num": "", "name": "Zapdos", "qty": 4, "price": 0.58}, {"set": "Hidden Fates (HIF)", "num": "", "name": "Clefairy (38)", "qty": 13, "price": 0.35}, {"set": "Hidden Fates (HIF)", "num": "", "name": "Magikarp", "qty": 29, "price": 0.33}, {"set": "Hidden Fates (HIF)", "num": "", "name": "Charmander", "qty": 47, "price": 0.29}, {"set": "Hidden Fates: Shiny Vault (HIF:SV)", "num": "", "name": "Greninja GX", "qty": 2, "price": 114.59}, {"set": "Hidden Fates: Shiny Vault (HIF:SV)", "num": "", "name": "Alolan Ninetales GX", "qty": 3, "price": 52.76}, {"set": "Hidden Fates: Shiny Vault (HIF:SV)", "num": "", "name": "Charmeleon", "qty": 11, "price": 16.45}, {"set": "Hidden Fates: Shiny Vault (HIF:SV)", "num": "", "name": "Alolan Vulpix", "qty": 22, "price": 13.31}, {"set": "Hidden Fates: Shiny Vault (HIF:SV)", "num": "", "name": "Golisopod GX", "qty": 14, "price": 10.58}, {"set": "Hidden Fates: Shiny Vault (HIF:SV)", "num": "", "name": "Scyther", "qty": 4, "price": 9.98}, {"set": "Hidden Fates: Shiny Vault (HIF:SV)", "num": "", "name": "Shuppet", "qty": 12, "price": 5.05}, {"set": "Jungle (JU)", "num": "", "name": "Meowth", "qty": 38, "price": 0.93}, {"set": "Legendary Treasures: Radiant Collection (LTR)", "num": "", "name": "Reshiram (Full Art)", "qty": 4, "price": 218.74}, {"set": "Lost Thunder (SM8)", "num": "SM", "name": "Lugia GX", "qty": 1, "price": 37.51}, {"set": "Lost Thunder (SM8)", "num": "SM", "name": "Cyndaquil (40)", "qty": 16, "price": 0.39}, {"set": "ME01: Mega Evolution (MEG)", "num": "060/132", "name": "Mega Gardevoir ex", "qty": 13, "price": 0.66}, {"set": "ME01: Mega Evolution (MEG)", "num": "137/132", "name": "Ninjask", "qty": 14, "price": 4.08}, {"set": "ME01: Mega Evolution (MEG)", "num": "143/132", "name": "Helioptile", "qty": 11, "price": 3.24}, {"set": "ME01: Mega Evolution (MEG)", "num": "144/132", "name": "Shedinja", "qty": 25, "price": 3.01}, {"set": "ME01: Mega Evolution (MEG)", "num": "145/132", "name": "Houndstone", "qty": 17, "price": 2.54}, {"set": "ME01: Mega Evolution (MEG)", "num": "146/132", "name": "Marshadow", "qty": 21, "price": 9.75}, {"set": "ME01: Mega Evolution (MEG)", "num": "148/132", "name": "Spiritomb", "qty": 97, "price": 2.63}, {"set": "ME01: Mega Evolution (MEG)", "num": "152/132", "name": "Delibird", "qty": 14, "price": 2.1}, {"set": "ME01: Mega Evolution (MEG)", "num": "154/132", "name": "Stufful", "qty": 23, "price": 7.16}, {"set": "ME01: Mega Evolution (MEG)", "num": "156/132", "name": "Mega Camerupt ex", "qty": 6, "price": 1.28}, {"set": "ME01: Mega Evolution (MEG)", "num": "157/132", "name": "Mega Abomasnow ex", "qty": 14, "price": 1.63}, {"set": "ME01: Mega Evolution (MEG)", "num": "158/132", "name": "Mega Manectric ex", "qty": 10, "price": 2.24}, {"set": "ME01: Mega Evolution (MEG)", "num": "161/132", "name": "Mega Absol ex", "qty": 18, "price": 4.62}, {"set": "ME01: Mega Evolution (MEG)", "num": "164/132", "name": "Mega Kangaskhan ex", "qty": 25, "price": 6.26}, {"set": "ME01: Mega Evolution (MEG)", "num": "168/132", "name": "Fighting Gong", "qty": 6, "price": 1.77}, {"set": "ME01: Mega Evolution (MEG)", "num": "170/132", "name": "Lt. Surge's Bargain", "qty": 25, "price": 0.97}, {"set": "ME01: Mega Evolution (MEG)", "num": "171/132", "name": "Mega Signal", "qty": 8, "price": 0.95}, {"set": "ME01: Mega Evolution (MEG)", "num": "172/132", "name": "Mystery Garden", "qty": 24, "price": 1.25}, {"set": "ME01: Mega Evolution (MEG)", "num": "187/132", "name": "Mega Gardevoir ex", "qty": 3, "price": 174.18}, {"set": "ME01: Mega Evolution (MEG)", "num": "", "name": "Night Stretcher", "qty": 8, "price": 6.32}, {"set": "ME02: Phantasmal Flames (PFL)", "num": "095/094", "name": "Ludicolo", "qty": 12, "price": 1.76}, {"set": "ME02: Phantasmal Flames (PFL)", "num": "096/094", "name": "Nymble", "qty": 39, "price": 1.34}, {"set": "ME02: Phantasmal Flames (PFL)", "num": "100/094", "name": "Zacian", "qty": 27, "price": 3.88}, {"set": "ME02: Phantasmal Flames (PFL)", "num": "103/094", "name": "Toxtricity", "qty": 12, "price": 2.51}, {"set": "ME02: Phantasmal Flames (PFL)", "num": "104/094", "name": "Togedemaru", "qty": 61, "price": 2.27}, {"set": "ME02: Phantasmal Flames (PFL)", "num": "107/094", "name": "Ambipom", "qty": 40, "price": 1.72}, {"set": "ME02: Phantasmal Flames (PFL)", "num": "108/094", "name": "Mega Heracross ex", "qty": 36, "price": 1.83}, {"set": "ME02: Phantasmal Flames (PFL)", "num": "109/094", "name": "Mega Charizard X ex", "qty": 23, "price": 20.07}, {"set": "ME02: Phantasmal Flames (PFL)", "num": "110/094", "name": "Oricorio ex", "qty": 18, "price": 1.03}, {"set": "ME02: Phantasmal Flames (PFL)", "num": "111/094", "name": "Rotom ex", "qty": 15, "price": 1.11}, {"set": "ME02: Phantasmal Flames (PFL)", "num": "112/094", "name": "Mismagius ex", "qty": 250, "price": 1.64}, {"set": "ME02: Phantasmal Flames (PFL)", "num": "113/094", "name": "Mega Sharpedo ex", "qty": 50, "price": 2.2}, {"set": "ME02: Phantasmal Flames (PFL)", "num": "114/094", "name": "Empoleon ex", "qty": 31, "price": 1.41}, {"set": "ME02: Phantasmal Flames (PFL)", "num": "115/094", "name": "Mega Lopunny ex", "qty": 38, "price": 1.86}, {"set": "ME02: Phantasmal Flames (PFL)", "num": "116/094", "name": "Battle Cage", "qty": 26, "price": 1.33}, {"set": "ME02: Phantasmal Flames (PFL)", "num": "117/094", "name": "Blowtorch", "qty": 95, "price": 0.56}, {"set": "ME02: Phantasmal Flames (PFL)", "num": "119/094", "name": "Firebreather", "qty": 21, "price": 0.83}, {"set": "ME02: Phantasmal Flames (PFL)", "num": "120/094", "name": "Grimsley's Move", "qty": 27, "price": 0.95}, {"set": "ME02: Phantasmal Flames (PFL)", "num": "121/094", "name": "Punk Helmet", "qty": 22, "price": 0.65}, {"set": "ME02: Phantasmal Flames (PFL)", "num": "122/094", "name": "Sacred Charm", "qty": 82, "price": 0.52}, {"set": "ME02: Phantasmal Flames (PFL)", "num": "128/094", "name": "Mega Lopunny ex", "qty": 9, "price": 12.71}, {"set": "ME02: Phantasmal Flames (PFL)", "num": "130/094", "name": "Mega Charizard X ex", "qty": 2, "price": 210.48}, {"set": "ME02: Phantasmal Flames (PFL)", "num": "", "name": "Ignition Energy", "qty": 38, "price": 1.28}, {"set": "ME02: Phantasmal Flames (PFL)", "num": "", "name": "Mega Diancie ex", "qty": 41, "price": 0.53}, {"set": "ME02: Phantasmal Flames (PFL)", "num": "", "name": "Dawn", "qty": 74, "price": 0.22}, {"set": "ME03: Perfect Order (POR)", "num": "089/088", "name": "Spewpa", "qty": 38, "price": 1.49}, {"set": "ME03: Perfect Order (POR)", "num": "093/088", "name": "Dedenne", "qty": 27, "price": 4.27}, {"set": "ME03: Perfect Order (POR)", "num": "096/088", "name": "Probopass", "qty": 32, "price": 0.79}, {"set": "ME03: Perfect Order (POR)", "num": "097/088", "name": "Drapion", "qty": 45, "price": 1.23}, {"set": "ME03: Perfect Order (POR)", "num": "106/088", "name": "Mega Skarmory ex", "qty": 20, "price": 3.29}, {"set": "ME03: Perfect Order (POR)", "num": "118/088", "name": "Mega Starmie ex", "qty": 11, "price": 31.34}, {"set": "ME03: Perfect Order (POR)", "num": "124/088", "name": "Mega Zygarde ex", "qty": 4, "price": 100.57}, {"set": "ME04: Chaos Rising (CRI)", "num": "089/086", "name": "Frogadier", "qty": 24, "price": 3.87}, {"set": "ME05: Pitch Black (ME05)", "num": "116/084", "name": "Mega Darkrai ex", "qty": 33, "price": 145.85}, {"set": "ME05: Pitch Black (PBL)", "num": "099/084", "name": "Mega Chandelure ex", "qty": 22, "price": 5.17}, {"set": "ME05: Pitch Black (PBL)", "num": "101/084", "name": "Mega Darkrai ex", "qty": 42, "price": 6.6}, {"set": "ME05: Pitch Black (PBL)", "num": "102/084", "name": "Morpeko ex", "qty": 31, "price": 3.54}, {"set": "ME05: Pitch Black (PBL)", "num": "120/084", "name": "Mega Darkrai ex", "qty": 1, "price": 137.85}, {"set": "ME: 30th Celebration (30C)", "num": "011/128", "name": "Moltres", "qty": 168, "price": 0.21}, {"set": "ME: 30th Celebration (30C)", "num": "018/128", "name": "Articuno", "qty": 123, "price": 0.23}, {"set": "ME: 30th Celebration (30C)", "num": "023/128", "name": "Pikachu", "qty": 40, "price": 0.84}, {"set": "ME: 30th Celebration (30C)", "num": "024/128", "name": "Pikachu", "qty": 8, "price": 0.67}, {"set": "ME: 30th Celebration (30C)", "num": "025/128", "name": "Pikachu", "qty": 67, "price": 0.52}, {"set": "ME: 30th Celebration (30C)", "num": "027/128", "name": "Pikachu", "qty": 93, "price": 0.95}, {"set": "ME: 30th Celebration (30C)", "num": "028/128", "name": "Pikachu", "qty": 55, "price": 0.85}, {"set": "ME: 30th Celebration (30C)", "num": "029/128", "name": "Pikachu", "qty": 119, "price": 0.73}, {"set": "ME: 30th Celebration (30C)", "num": "030/128", "name": "Pikachu", "qty": 39, "price": 0.59}, {"set": "ME: 30th Celebration (30C)", "num": "033/128", "name": "Pikachu", "qty": 43, "price": 0.62}, {"set": "ME: 30th Celebration (30C)", "num": "034/128", "name": "Pikachu", "qty": 23, "price": 1.17}, {"set": "ME: 30th Celebration (30C)", "num": "035/128", "name": "Pikachu", "qty": 55, "price": 0.84}, {"set": "ME: 30th Celebration (30C)", "num": "036/128", "name": "Pikachu", "qty": 56, "price": 0.99}, {"set": "ME: 30th Celebration (30C)", "num": "037/128", "name": "Pikachu", "qty": 84, "price": 0.6}, {"set": "ME: 30th Celebration (30C)", "num": "038/128", "name": "Pikachu", "qty": 24, "price": 0.72}, {"set": "ME: 30th Celebration (30C)", "num": "039/128", "name": "Pikachu", "qty": 71, "price": 0.8}, {"set": "ME: 30th Celebration (30C)", "num": "040/128", "name": "Pikachu", "qty": 125, "price": 2.21}, {"set": "ME: 30th Celebration (30C)", "num": "041/128", "name": "Pikachu", "qty": 15, "price": 0.63}, {"set": "ME: 30th Celebration (30C)", "num": "043/128", "name": "Pikachu", "qty": 46, "price": 0.85}, {"set": "ME: 30th Celebration (30C)", "num": "044/128", "name": "Pikachu", "qty": 39, "price": 0.66}, {"set": "ME: 30th Celebration (30C)", "num": "045/128", "name": "Pikachu", "qty": 25, "price": 0.63}, {"set": "ME: 30th Celebration (30C)", "num": "046/128", "name": "Pikachu", "qty": 50, "price": 0.55}, {"set": "ME: 30th Celebration (30C)", "num": "047/128", "name": "Pikachu", "qty": 39, "price": 0.71}, {"set": "ME: 30th Celebration (30C)", "num": "048/128", "name": "Pikachu", "qty": 71, "price": 0.7}, {"set": "ME: 30th Celebration (30C)", "num": "049/128", "name": "Pikachu", "qty": 71, "price": 0.67}, {"set": "ME: 30th Celebration (30C)", "num": "050/128", "name": "Pikachu", "qty": 46, "price": 0.72}, {"set": "ME: 30th Celebration (30C)", "num": "051/128", "name": "Pikachu", "qty": 44, "price": 0.59}, {"set": "ME: 30th Celebration (30C)", "num": "052/128", "name": "Pikachu", "qty": 20, "price": 0.68}, {"set": "ME: 30th Celebration (30C)", "num": "053/128", "name": "Pikachu ex", "qty": 277, "price": 1.18}, {"set": "ME: 30th Celebration (30C)", "num": "054/128", "name": "Pikachu ex", "qty": 84, "price": 1.63}, {"set": "ME: 30th Celebration (30C)", "num": "055/128", "name": "Zapdos", "qty": 131, "price": 0.2}, {"set": "ME: 30th Celebration (30C)", "num": "064/128", "name": "Mewtwo ex", "qty": 276, "price": 1.14}, {"set": "ME: 30th Celebration (30C)", "num": "071/128", "name": "Sylveon ex", "qty": 264, "price": 0.9}, {"set": "ME: 30th Celebration (30C)", "num": "090/128", "name": "Gengar ex", "qty": 272, "price": 1.58}, {"set": "ME: 30th Celebration (30C)", "num": "129/128", "name": "Alolan Exeggutor", "qty": 169, "price": 1.92}, {"set": "ME: 30th Celebration (30C)", "num": "130/128", "name": "Moltres", "qty": 204, "price": 5.58}, {"set": "ME: 30th Celebration (30C)", "num": "131/128", "name": "Lapras", "qty": 34, "price": 5.58}, {"set": "ME: 30th Celebration (30C)", "num": "132/128", "name": "Articuno", "qty": 264, "price": 6.79}, {"set": "ME: 30th Celebration (30C)", "num": "133/128", "name": "Zapdos", "qty": 259, "price": 6.78}, {"set": "ME: 30th Celebration (30C)", "num": "134/128", "name": "Toxtricity", "qty": 203, "price": 2.51}, {"set": "ME: 30th Celebration (30C)", "num": "135/128", "name": "Morpeko", "qty": 160, "price": 5.15}, {"set": "ME: 30th Celebration (30C)", "num": "136/128", "name": "Drifloon", "qty": 163, "price": 2.5}, {"set": "ME: 30th Celebration (30C)", "num": "137/128", "name": "Chandelure", "qty": 163, "price": 2.22}, {"set": "ME: 30th Celebration (30C)", "num": "138/128", "name": "Lycanroc", "qty": 286, "price": 1.62}, {"set": "ME: 30th Celebration (30C)", "num": "139/128", "name": "Alolan Meowth", "qty": 96, "price": 7.34}, {"set": "ME: 30th Celebration (30C)", "num": "140/128", "name": "Scraggy", "qty": 276, "price": 1.26}, {"set": "ME: 30th Celebration (30C)", "num": "141/128", "name": "Galarian Meowth", "qty": 141, "price": 6.89}, {"set": "ME: 30th Celebration (30C)", "num": "142/128", "name": "Gholdengo", "qty": 253, "price": 1.51}, {"set": "ME: 30th Celebration (30C)", "num": "143/128", "name": "Kommo-o", "qty": 237, "price": 1.29}, {"set": "ME: 30th Celebration (30C)", "num": "144/128", "name": "Meowth", "qty": 59, "price": 9.87}, {"set": "ME: 30th Celebration (30C)", "num": "145/128", "name": "Hisuian Zorua", "qty": 95, "price": 4.99}, {"set": "ME: 30th Celebration (30C)", "num": "146/128", "name": "Maushold", "qty": 60, "price": 11.84}, {"set": "ME: 30th Celebration (30C)", "num": "147/128", "name": "Fuecoco ex", "qty": 77, "price": 14.49}, {"set": "ME: 30th Celebration (30C)", "num": "148/128", "name": "Greninja ex", "qty": 47, "price": 20.04}, {"set": "ME: 30th Celebration (30C)", "num": "149/128", "name": "Pikachu ex", "qty": 24, "price": 46.51}, {"set": "ME: 30th Celebration (30C)", "num": "150/128", "name": "Pikachu ex", "qty": 74, "price": 59.26}, {"set": "ME: 30th Celebration (30C)", "num": "151/128", "name": "Mewtwo ex", "qty": 63, "price": 49.22}, {"set": "ME: 30th Celebration (30C)", "num": "152/128", "name": "Mew ex", "qty": 33, "price": 85.13}, {"set": "ME: 30th Celebration (30C)", "num": "153/128", "name": "Sylveon ex", "qty": 46, "price": 41.76}, {"set": "ME: 30th Celebration (30C)", "num": "155/128", "name": "Jirachi ex", "qty": 34, "price": 45.94}, {"set": "ME: 30th Celebration (30C)", "num": "156/128", "name": "Salamence ex", "qty": 70, "price": 15.09}, {"set": "ME: 30th Celebration (30C)", "num": "", "name": "Mewtwo ex", "qty": 21, "price": 42.02}, {"set": "ME: 30th Celebration (30C)", "num": "", "name": "Umbreon ex", "qty": 520, "price": 1.1}, {"set": "ME: 30th Celebration (30C)", "num": "", "name": "Zacian", "qty": 133, "price": 0.2}, {"set": "ME: 30th Celebration (30C)", "num": "", "name": "Zamazenta", "qty": 138, "price": 0.18}, {"set": "ME: 30th Celebration Classic Collection (30C)", "num": "", "name": "Lugia", "qty": 52, "price": 180.26}, {"set": "ME: 30th Celebration Classic Collection (30C)", "num": "", "name": "Charizard", "qty": 34, "price": 143.2}, {"set": "ME: 30th Celebration Classic Collection (30C)", "num": "", "name": "Magikarp", "qty": 58, "price": 87.99}, {"set": "ME: 30th Celebration Classic Collection (30C)", "num": "", "name": "Gengar (Prime)", "qty": 12, "price": 55.38}, {"set": "ME: 30th Celebration Classic Collection (30C)", "num": "", "name": "Pikachu & Zekrom GX", "qty": 51, "price": 27.16}, {"set": "ME: 30th Celebration Classic Collection (30C)", "num": "", "name": "Shining Celebi", "qty": 141, "price": 24.79}, {"set": "ME: 30th Celebration Classic Collection (30C)", "num": "", "name": "Darkrai & Cresselia Legend (Bottom)", "qty": 70, "price": 21.14}, {"set": "ME: 30th Celebration Classic Collection (30C)", "num": "", "name": "Rayquaza EX", "qty": 115, "price": 21.08}, {"set": "ME: 30th Celebration Classic Collection (30C)", "num": "", "name": "Darkrai & Cresselia Legend (Top)", "qty": 85, "price": 20.66}, {"set": "ME: 30th Celebration Classic Collection (30C)", "num": "", "name": "Pikachu", "qty": 43, "price": 19.89}, {"set": "ME: 30th Celebration Classic Collection (30C)", "num": "", "name": "Mew VMAX", "qty": 75, "price": 18.66}, {"set": "ME: 30th Celebration Classic Collection (30C)", "num": "", "name": "N", "qty": 30, "price": 14.52}, {"set": "ME: 30th Celebration Classic Collection (30C)", "num": "", "name": "Dark Tyranitar", "qty": 70, "price": 12.39}, {"set": "ME: 30th Celebration Classic Collection (30C)", "num": "", "name": "Palkia LV.X", "qty": 82, "price": 11.2}, {"set": "ME: 30th Celebration Classic Collection (30C)", "num": "", "name": "M Gardevoir EX", "qty": 39, "price": 11.06}, {"set": "ME: 30th Celebration Classic Collection (30C)", "num": "", "name": "Scizor ex", "qty": 38, "price": 10.72}, {"set": "ME: 30th Celebration Classic Collection (30C)", "num": "", "name": "Greninja BREAK", "qty": 76, "price": 10.22}, {"set": "ME: 30th Celebration Classic Collection (30C)", "num": "", "name": "Raikou", "qty": 137, "price": 9.54}, {"set": "ME: 30th Celebration Classic Collection (30C)", "num": "", "name": "Arceus VSTAR", "qty": 126, "price": 9.42}, {"set": "ME: 30th Celebration Classic Collection (30C)", "num": "", "name": "Erika's Jigglypuff", "qty": 36, "price": 9.09}, {"set": "ME: 30th Celebration Classic Collection (30C)", "num": "", "name": "Metagross (Delta Species)", "qty": 39, "price": 7.74}, {"set": "ME: 30th Celebration Classic Collection (30C)", "num": "", "name": "Genesect EX (Team Plasma)", "qty": 27, "price": 7.49}, {"set": "ME: 30th Celebration Classic Collection (30C)", "num": "", "name": "Solgaleo GX", "qty": 48, "price": 7.36}, {"set": "ME: 30th Celebration Classic Collection (30C)", "num": "", "name": "Zacian V", "qty": 66, "price": 7.35}, {"set": "ME: 30th Celebration Classic Collection (30C)", "num": "", "name": "Misty", "qty": 57, "price": 7.25}, {"set": "ME: 30th Celebration Classic Collection (30C)", "num": "", "name": "Sneasel", "qty": 79, "price": 5.44}, {"set": "ME: 30th Celebration Classic Collection (30C)", "num": "", "name": "Uxie", "qty": 171, "price": 5.16}, {"set": "ME: 30th Celebration Classic Collection (30C)", "num": "", "name": "Delcatty", "qty": 60, "price": 5.11}, {"set": "ME: 30th Celebration Classic Collection (30C)", "num": "", "name": "Crobat G", "qty": 63, "price": 4.95}, {"set": "ME: 30th Celebration Classic Collection (30C)", "num": "", "name": "Buzzwole GX", "qty": 47, "price": 4.46}, {"set": "ME: Ascended Heroes (ASC)", "num": "125/217", "name": "Mega Gengar ex", "qty": 108, "price": 2.79}, {"set": "ME: Ascended Heroes (ASC)", "num": "220/217", "name": "Dustox", "qty": 29, "price": 2.39}, {"set": "ME: Ascended Heroes (ASC)", "num": "229/217", "name": "Heliolisk", "qty": 3, "price": 1.74}, {"set": "ME: Ascended Heroes (ASC)", "num": "233/217", "name": "Misdreavus", "qty": 91, "price": 4.48}, {"set": "ME: Ascended Heroes (ASC)", "num": "237/217", "name": "Hop's Trevenant", "qty": 62, "price": 3.63}, {"set": "ME: Ascended Heroes (ASC)", "num": "238/217", "name": "Team Rocket's Mimikyu", "qty": 27, "price": 16.13}, {"set": "ME: Ascended Heroes (ASC)", "num": "242/217", "name": "Carbink", "qty": 16, "price": 3.79}, {"set": "ME: Ascended Heroes (ASC)", "num": "244/217", "name": "Cynthia's Spiritomb", "qty": 37, "price": 8.2}, {"set": "ME: Ascended Heroes (ASC)", "num": "250/217", "name": "Fan Rotom", "qty": 15, "price": 2.39}, {"set": "ME: Ascended Heroes (ASC)", "num": "252/217", "name": "Stunfisk ex", "qty": 17, "price": 0.58}, {"set": "ME: Ascended Heroes (ASC)", "num": "253/217", "name": "Mega Audino ex", "qty": 30, "price": 1.36}, {"set": "ME: Ascended Heroes (ASC)", "num": "257/217", "name": "Canari", "qty": 13, "price": 2.45}, {"set": "ME: Ascended Heroes (ASC)", "num": "262/217", "name": "N's PP Up", "qty": 19, "price": 1.6}, {"set": "ME: Ascended Heroes (ASC)", "num": "265/217", "name": "Mega Froslass ex", "qty": 27, "price": 6.27}, {"set": "ME: Ascended Heroes (ASC)", "num": "267/217", "name": "Mega Diancie ex", "qty": 29, "price": 5.27}, {"set": "ME: Ascended Heroes (ASC)", "num": "268/217", "name": "Mega Hawlucha ex", "qty": 36, "price": 4.1}, {"set": "ME: Ascended Heroes (ASC)", "num": "270/217", "name": "Mega Scrafty ex", "qty": 30, "price": 3.48}, {"set": "ME: Ascended Heroes (ASC)", "num": "277/217", "name": "Pikachu ex", "qty": 16, "price": 301.51}, {"set": "ME: Ascended Heroes (ASC)", "num": "290/217", "name": "Mega Dragonite ex", "qty": 11, "price": 479.02}, {"set": "ME: Ascended Heroes (ASC)", "num": "291/217", "name": "Canari", "qty": 10, "price": 23.87}, {"set": "ME: Ascended Heroes (ASC)", "num": "294/217", "name": "Mega Charizard Y ex", "qty": 6, "price": 292.47}, {"set": "ME: Ascended Heroes (ASC)", "num": "295/217", "name": "Mega Dragonite ex", "qty": 7, "price": 170.69}, {"set": "ME: Ascended Heroes (ASC)", "num": "", "name": "Sprigatito ex", "qty": 18, "price": 1.73}, {"set": "ME: Ascended Heroes (ASC)", "num": "", "name": "Zangoose ex", "qty": 83, "price": 0.63}, {"set": "ME: Ascended Heroes (ASC)", "num": "", "name": "Pikachu", "qty": 136, "price": 0.3}, {"set": "ME: Mega Evolution Promo (MEP)", "num": "009", "name": "Alakazam", "qty": 32, "price": 7.53}, {"set": "ME: Mega Evolution Promo (MEP)", "num": "010", "name": "Riolu", "qty": 8, "price": 7.86}, {"set": "ME: Mega Evolution Promo (MEP)", "num": "011", "name": "Mega Latias ex", "qty": 12, "price": 0.72}, {"set": "ME: Mega Evolution Promo (MEP)", "num": "024", "name": "Oricorio ex", "qty": 9, "price": 8.54}, {"set": "ME: Mega Evolution Promo (MEP)", "num": "025", "name": "Mega Kangaskhan ex", "qty": 58, "price": 1.1}, {"set": "ME: Mega Evolution Promo (MEP)", "num": "027", "name": "Haunter", "qty": 31, "price": 42.68}, {"set": "ME: Mega Evolution Promo (MEP)", "num": "054", "name": "Sobble", "qty": 25, "price": 2.6}, {"set": "ME: Mega Evolution Promo (MEP)", "num": "080", "name": "Fennekin", "qty": 33, "price": 1.58}, {"set": "ME: Mega Evolution Promo (MEP)", "num": "088", "name": "Zarude", "qty": 155, "price": 0.9}, {"set": "Miscellaneous Cards & Products (MCAP)", "num": "", "name": "Ancient Mew", "qty": 25, "price": 119.94}, {"set": "Miscellaneous Cards & Products (MCAP)", "num": "", "name": "Tepig", "qty": 10, "price": 0.54}, {"set": "Neo Genesis (N1)", "num": "", "name": "Elekid", "qty": 5, "price": 4.58}, {"set": "Pokemon GO (PGO)", "num": "", "name": "Mewtwo VSTAR (86) (Secret)", "qty": 4, "price": 33.83}, {"set": "Pokemon GO (PGO)", "num": "", "name": "Dragonite V (Full Art)", "qty": 31, "price": 16.44}, {"set": "Pokemon GO (PGO)", "num": "", "name": "Dragonite V", "qty": 90, "price": 3.68}, {"set": "Pokemon GO (PGO)", "num": "", "name": "Snorlax", "qty": 22, "price": 1.73}, {"set": "Pokemon GO (PGO)", "num": "", "name": "Squirtle", "qty": 20, "price": 0.31}, {"set": "Pokemon GO (PGO)", "num": "", "name": "Bidoof", "qty": 8, "price": 0.18}, {"set": "Primal Clash (PRC)", "num": "XY", "name": "Bidoof (Alpha)", "qty": 11, "price": 1.82}, {"set": "Primal Clash (PRC)", "num": "XY", "name": "Gorebyss (Alpha)", "qty": 10, "price": 1.5}, {"set": "Roaring Skies (ROS)", "num": "XY", "name": "Articuno (17 Delta)", "qty": 23, "price": 3.66}, {"set": "SM Base Set (SM01)", "num": "", "name": "Lillie (Full Art)", "qty": 12, "price": 42.62}, {"set": "SM Base Set (SM01)", "num": "", "name": "Espeon GX", "qty": 28, "price": 9.25}, {"set": "SM Base Set (SM01)", "num": "", "name": "Nest Ball (Secret)", "qty": 3, "price": 9.13}, {"set": "SM Base Set (SM01)", "num": "", "name": "Caterpie", "qty": 4, "price": 0.24}, {"set": "SM Promos (SMP)", "num": "SM77", "name": "Mewtwo", "qty": 7, "price": 20.05}, {"set": "SM Promos (SMP)", "num": "SM201", "name": "Reshiram & Charizard GX", "qty": 4, "price": 179.03}, {"set": "SM Promos (SMP)", "num": "SM211", "name": "Charizard GX", "qty": 26, "price": 10.59}, {"set": "SM Promos (SMP)", "num": "", "name": "Moltres & Zapdos & Articuno GX", "qty": 39, "price": 153.64}, {"set": "SV01: Scarlet & Violet Base Set (SV01)", "num": "208/198", "name": "Pachirisu", "qty": 9, "price": 18.43}, {"set": "SV01: Scarlet & Violet Base Set (SV01)", "num": "215/198", "name": "Riolu", "qty": 6, "price": 31.68}, {"set": "SV01: Scarlet & Violet Base Set (SV01)", "num": "240/198", "name": "Professor's Research", "qty": 3, "price": 2.49}, {"set": "SV01: Scarlet & Violet Base Set (SV01)", "num": "250/198", "name": "Jacq", "qty": 1, "price": 4.21}, {"set": "SV01: Scarlet & Violet Base Set (SV01)", "num": "255/198", "name": "Nest Ball", "qty": 5, "price": 3.05}, {"set": "SV01: Scarlet & Violet Base Set (SV1)", "num": "166/198", "name": "Arven", "qty": 9, "price": 0.29}, {"set": "SV01: Scarlet & Violet Base Set (SV1)", "num": "204/198", "name": "Slowpoke", "qty": 21, "price": 37.31}, {"set": "SV01: Scarlet & Violet Base Set (SV1)", "num": "218/198", "name": "Mabosstiff", "qty": 12, "price": 8.58}, {"set": "SV01: Scarlet & Violet Base Set (SV1)", "num": "221/198", "name": "Starly", "qty": 5, "price": 16.3}, {"set": "SV01: Scarlet & Violet Base Set (SV1)", "num": "224/198", "name": "Arcanine ex", "qty": 16, "price": 13.36}, {"set": "SV01: Scarlet & Violet Base Set (SV1)", "num": "", "name": "Toxtricity", "qty": 11, "price": 0.15}, {"set": "SV01: Scarlet & Violet Base Set (SV1)", "num": "", "name": "Muk", "qty": 9, "price": 0.12}, {"set": "SV01: Scarlet & Violet Base Set (SV1)", "num": "", "name": "Flabebe", "qty": 13, "price": 0.11}, {"set": "SV01: Scarlet & Violet Base Set (SVI)", "num": "220/198", "name": "Kingambit", "qty": 13, "price": 8.94}, {"set": "SV02: Paldea Evolved (PAL)", "num": "205/193", "name": "Eiscue", "qty": 5, "price": 22.59}, {"set": "SV02: Paldea Evolved (PAL)", "num": "208/193", "name": "Frigibax", "qty": 4, "price": 21.87}, {"set": "SV02: Paldea Evolved (PAL)", "num": "214/193", "name": "Sandygast", "qty": 5, "price": 11.03}, {"set": "SV02: Paldea Evolved (PAL)", "num": "232/193", "name": "Wo-Chien ex", "qty": 3, "price": 1.75}, {"set": "SV02: Paldea Evolved (PAL)", "num": "234/193", "name": "Chi-Yu ex", "qty": 13, "price": 4.27}, {"set": "SV02: Paldea Evolved (PAL)", "num": "243/193", "name": "Ting-Lu ex", "qty": 5, "price": 1.27}, {"set": "SV02: Paldea Evolved (PAL)", "num": "262/193", "name": "Tinkaton ex", "qty": 6, "price": 53.1}, {"set": "SV02: Paldea Evolved (PAL)", "num": "", "name": "Pikachu", "qty": 170, "price": 0.33}, {"set": "SV02: Paldea Evolved (PAL)", "num": "", "name": "Honchkrow", "qty": 6, "price": 0.14}, {"set": "SV02: Paldea Evolved (SV02)", "num": "005/193", "name": "Forretress ex", "qty": 16, "price": 0.66}, {"set": "SV02: Paldea Evolved (SV02)", "num": "027/193", "name": "Wo-Chien ex", "qty": 7, "price": 0.65}, {"set": "SV02: Paldea Evolved (SV02)", "num": "073/193", "name": "Pincurchin", "qty": 14, "price": 0.09}, {"set": "SV02: Paldea Evolved (SV02)", "num": "086/193", "name": "Slowking ex", "qty": 13, "price": 1.0}, {"set": "SV02: Paldea Evolved (SV02)", "num": "202/193", "name": "Crocalor", "qty": 3, "price": 16.27}, {"set": "SV02: Paldea Evolved (SV02)", "num": "211/193", "name": "Raichu", "qty": 12, "price": 97.56}, {"set": "SV02: Paldea Evolved (SV02)", "num": "222/193", "name": "Tyranitar", "qty": 9, "price": 72.6}, {"set": "SV02: Paldea Evolved (SV02)", "num": "235/193", "name": "Quaquaval ex", "qty": 10, "price": 2.05}, {"set": "SV02: Paldea Evolved (SV02)", "num": "236/193", "name": "Chien-Pao ex", "qty": 3, "price": 2.64}, {"set": "SV02: Paldea Evolved (SV02)", "num": "244/193", "name": "Paldean Clodsire ex", "qty": 7, "price": 3.33}, {"set": "SV02: Paldea Evolved (SV02)", "num": "250/193", "name": "Dendra", "qty": 21, "price": 2.22}, {"set": "SV02: Paldea Evolved (SV02)", "num": "261/193", "name": "Chien-Pao ex", "qty": 16, "price": 27.69}, {"set": "SV02: Paldea Evolved (SV02)", "num": "266/193", "name": "Dendra", "qty": 9, "price": 8.26}, {"set": "SV02: Paldea Evolved (SV02)", "num": "276/193", "name": "Super Rod", "qty": 11, "price": 3.22}, {"set": "SV02: Paldea Evolved (SV02)", "num": "", "name": "Noivern ex", "qty": 14, "price": 0.65}, {"set": "SV02: Paldea Evolved (SV02)", "num": "", "name": "Gyarados", "qty": 5, "price": 0.38}, {"set": "SV02: Paldea Evolved (SV02)", "num": "", "name": "Therapeutic Energy", "qty": 14, "price": 0.17}, {"set": "SV02: Paldea Evolved (SV02)", "num": "", "name": "Calamitous Wasteland", "qty": 63, "price": 0.1}, {"set": "SV03: Obsidian Flames (OBF)", "num": "", "name": "Clefable ex", "qty": 41, "price": 1.55}, {"set": "SV03: Obsidian Flames (OBF)", "num": "", "name": "Umbreon", "qty": 38, "price": 0.38}, {"set": "SV03: Obsidian Flames (OBF)", "num": "", "name": "Togepi", "qty": 6, "price": 0.2}, {"set": "SV03: Obsidian Flames (OBF)", "num": "", "name": "Bronzor", "qty": 13, "price": 0.2}, {"set": "SV03: Obsidian Flames (SV03", "num": "", "name": "Cryogonal", "qty": 13, "price": 0.14}, {"set": "SV03: Obsidian Flames (SV03)", "num": "024/197", "name": "Capsakid", "qty": 25, "price": 0.1}, {"set": "SV03: Obsidian Flames (SV03)", "num": "135/197", "name": "Absol ex", "qty": 5, "price": 1.43}, {"set": "SV03: Obsidian Flames (SV03)", "num": "182/197", "name": "Lechonk", "qty": 26, "price": 0.16}, {"set": "SV03: Obsidian Flames (SV03)", "num": "207/197", "name": "Pidgey", "qty": 14, "price": 11.96}, {"set": "SV03: Obsidian Flames (SV03)", "num": "211/197", "name": "Tyranitar ex", "qty": 17, "price": 4.89}, {"set": "SV03: Obsidian Flames (SV03)", "num": "212/197", "name": "Vespiquen ex", "qty": 6, "price": 1.46}, {"set": "SV03: Obsidian Flames (SV03)", "num": "213/197", "name": "Glimmora ex", "qty": 12, "price": 0.83}, {"set": "SV03: Obsidian Flames (SV03)", "num": "214/197", "name": "Absol ex", "qty": 16, "price": 2.7}, {"set": "SV03: Obsidian Flames (SV03)", "num": "216/197", "name": "Revavroom ex", "qty": 5, "price": 0.77}, {"set": "SV03: Obsidian Flames (SV03)", "num": "217/197", "name": "Pidgeot ex", "qty": 13, "price": 1.94}, {"set": "SV03: Obsidian Flames (SV03)", "num": "218/197", "name": "Geeta", "qty": 10, "price": 1.22}, {"set": "SV03: Obsidian Flames (SV03)", "num": "220/197", "name": "Poppy", "qty": 15, "price": 1.35}, {"set": "SV03: Obsidian Flames (SV03)", "num": "226/197", "name": "Geeta", "qty": 17, "price": 3.0}, {"set": "SV03: Obsidian Flames (SV03)", "num": "227/197", "name": "Poppy", "qty": 5, "price": 2.77}, {"set": "SV03: Obsidian Flames (SV03)", "num": "", "name": "Charizard ex", "qty": 8, "price": 6.52}, {"set": "SV03: Obsidian Flames (SV03)", "num": "", "name": "Dragonite ex", "qty": 15, "price": 3.1}, {"set": "SV03: Obsidian Flames (SV03)", "num": "", "name": "Eiscue ex", "qty": 3, "price": 1.84}, {"set": "SV03: Obsidian Flames (SV03)", "num": "", "name": "Houndoom ex", "qty": 20, "price": 1.14}, {"set": "SV03: Obsidian Flames (SV03)", "num": "", "name": "Houndstone ex", "qty": 126, "price": 0.89}, {"set": "SV03: Obsidian Flames (SV03)", "num": "", "name": "Klawf ex", "qty": 26, "price": 0.77}, {"set": "SV03: Obsidian Flames (SV03)", "num": "", "name": "Pawmot ex", "qty": 17, "price": 0.68}, {"set": "SV03: Obsidian Flames (SV03)", "num": "", "name": "Eevee", "qty": 15, "price": 0.3}, {"set": "SV03: Obsidian Flames (SV03)", "num": "", "name": "Amoonguss", "qty": 28, "price": 0.2}, {"set": "SV03: Obsidian Flames (SV03)", "num": "", "name": "Magneton", "qty": 21, "price": 0.18}, {"set": "SV03: Obsidian Flames (SV03)", "num": "", "name": "Snubbull", "qty": 24, "price": 0.16}, {"set": "SV03: Obsidian Flames (SV03)", "num": "", "name": "Tadbulb 075/197", "qty": 9, "price": 0.15}, {"set": "SV03: Obsidian Flames (SV03)", "num": "", "name": "Wiglett", "qty": 33, "price": 0.12}, {"set": "SV03: Obsidian Flames (SV03)", "num": "", "name": "Granbull", "qty": 28, "price": 0.11}, {"set": "SV04: Paradox Rift (PAR)", "num": "139/182", "name": "Gholdengo ex", "qty": 6, "price": 0.9}, {"set": "SV04: Paradox Rift (PAR)", "num": "198/182", "name": "Gimmighoul", "qty": 27, "price": 13.0}, {"set": "SV04: Paradox Rift (PAR)", "num": "199/182", "name": "Groudon", "qty": 4, "price": 105.14}, {"set": "SV04: Paradox Rift (PAR)", "num": "205/182", "name": "Yveltal", "qty": 2, "price": 29.32}, {"set": "SV04: Paradox Rift (PAR)", "num": "210/182", "name": "Aegislash", "qty": 12, "price": 12.25}, {"set": "SV04: Paradox Rift (PAR)", "num": "219/182", "name": "Garchomp ex", "qty": 1, "price": 7.36}, {"set": "SV04: Paradox Rift (PAR)", "num": "223/182", "name": "Iron Hands ex", "qty": 16, "price": 1.86}, {"set": "SV04: Paradox Rift (PAR)", "num": "228/182", "name": "Sandy Shocks ex", "qty": 12, "price": 1.85}, {"set": "SV04: Paradox Rift (PAR)", "num": "230/182", "name": "Aegislash ex", "qty": 9, "price": 1.72}, {"set": "SV04: Paradox Rift (PAR)", "num": "", "name": "Mewtwo ex", "qty": 14, "price": 2.79}, {"set": "SV04: Paradox Rift (SV04)", "num": "046/182", "name": "Tsareena ex", "qty": 32, "price": 0.56}, {"set": "SV04: Paradox Rift (SV04)", "num": "188/182", "name": "Snorunt", "qty": 22, "price": 6.76}, {"set": "SV04: Paradox Rift (SV04)", "num": "225/182", "name": "Iron Valiant ex", "qty": 23, "price": 2.59}, {"set": "SV04: Paradox Rift (SV04)", "num": "229/182", "name": "Roaring Moon ex", "qty": 11, "price": 3.8}, {"set": "SV05: Temporal Forces (TEF)", "num": "038/162", "name": "Gouging Fire ex", "qty": 11, "price": 0.78}, {"set": "SV05: Temporal Forces (TEF)", "num": "104/162", "name": "Gengar ex", "qty": 30, "price": 6.43}, {"set": "SV05: Temporal Forces (TEF)", "num": "170/162", "name": "Bronzor", "qty": 4, "price": 8.73}, {"set": "SV05: Temporal Forces (TEF)", "num": "179/162", "name": "Meltan", "qty": 9, "price": 6.74}, {"set": "SV05: Temporal Forces (TEF)", "num": "184/162", "name": "Drampa", "qty": 18, "price": 26.82}, {"set": "SV05: Temporal Forces (TEF)", "num": "188/162", "name": "Gouging Fire ex", "qty": 9, "price": 2.52}, {"set": "SV05: Temporal Forces (TEF)", "num": "214/162", "name": "Gouging Fire ex", "qty": 2, "price": 14.76}, {"set": "SV05: Temporal Forces (TEF)", "num": "218/162", "name": "Raging Bolt ex", "qty": 3, "price": 14.37}, {"set": "SV06: Twilight Masquerade (TWM)", "num": "188/167", "name": "Eevee", "qty": 13, "price": 71.25}, {"set": "SV06: Twilight Masquerade (TWM)", "num": "196/167", "name": "Iron Thorns ex", "qty": 13, "price": 2.39}, {"set": "SV06: Twilight Masquerade (TWM)", "num": "197/167", "name": "Scream Tail ex", "qty": 33, "price": 2.42}, {"set": "SV06: Twilight Masquerade (TWM)", "num": "207/167", "name": "Lana's Aid", "qty": 1, "price": 5.55}, {"set": "SV06: Twilight Masquerade (TWM)", "num": "210/167", "name": "Sinistcha ex", "qty": 17, "price": 34.73}, {"set": "SV06: Twilight Masquerade (TWM)", "num": "", "name": "Bug Catching Set", "qty": 5, "price": 0.25}, {"set": "SV06: Twilight Masquerade (TWM)", "num": "", "name": "Okidogi", "qty": 12, "price": 0.19}, {"set": "SV06: Twilight Masquerade (TWM)", "num": "", "name": "Brute Bonnet", "qty": 4, "price": 0.17}, {"set": "SV07: Stellar Crown (SV07)", "num": "131/142", "name": "Area Zero Underdepths", "qty": 10, "price": 0.22}, {"set": "SV08: Surging Sparks (SV08)", "num": "193/191", "name": "Vivillon", "qty": 8, "price": 4.87}, {"set": "SV08: Surging Sparks (SV08)", "num": "195/191", "name": "Castform Sunny Form", "qty": 16, "price": 7.68}, {"set": "SV08: Surging Sparks (SV08)", "num": "199/191", "name": "Spheal", "qty": 14, "price": 9.93}, {"set": "SV08: Surging Sparks (SV08)", "num": "204/191", "name": "Mesprit", "qty": 17, "price": 12.22}, {"set": "SV08: Surging Sparks (SV08)", "num": "207/191", "name": "Clobbopus", "qty": 9, "price": 5.91}, {"set": "SV08: Surging Sparks (SV08)", "num": "209/191", "name": "Skarmory", "qty": 20, "price": 8.31}, {"set": "SV08: Surging Sparks (SV08)", "num": "239/191", "name": "Latias ex", "qty": 13, "price": 182.25}, {"set": "SV08: Surging Sparks (SV08)", "num": "", "name": "Megaton Blower", "qty": 35, "price": 0.35}, {"set": "SV09: Journey Together", "num": "053/159", "name": "Iono's Bellibolt ex", "qty": 97, "price": 0.54}, {"set": "SV09: Journey Together", "num": "111/159", "name": "Hop's Zacian ex", "qty": 24, "price": 0.68}, {"set": "SV09: Journey Together", "num": "114/159", "name": "Salamence ex", "qty": 57, "price": 0.66}, {"set": "SV09: Journey Together", "num": "116/159", "name": "N's Reshiram", "qty": 9, "price": 0.18}, {"set": "SV09: Journey Together", "num": "163/159", "name": "Iono's Kilowattrel", "qty": 46, "price": 3.43}, {"set": "SV09: Journey Together", "num": "164/159", "name": "Lillie's Ribombee", "qty": 67, "price": 4.41}, {"set": "SV09: Journey Together", "num": "171/159", "name": "Volcanion ex", "qty": 6, "price": 0.99}, {"set": "SV09: Journey Together", "num": "172/159", "name": "Iono's Bellibolt ex", "qty": 28, "price": 1.55}, {"set": "SV09: Journey Together", "num": "174/159", "name": "Mamoswine ex", "qty": 12, "price": 0.87}, {"set": "SV09: Journey Together", "num": "175/159", "name": "N's Zoroark ex", "qty": 21, "price": 3.32}, {"set": "SV09: Journey Together", "num": "177/159", "name": "Salamence ex", "qty": 24, "price": 1.56}, {"set": "SV09: Journey Together", "num": "181/159", "name": "Ruffian", "qty": 16, "price": 0.68}, {"set": "SV09: Journey Together", "num": "187/159", "name": "Salamence ex", "qty": 6, "price": 42.65}, {"set": "SV09: Journey Together", "num": "188/159", "name": "Iono's Bellibolt ex", "qty": 9, "price": 9.69}, {"set": "SV09: Journey Together", "num": "190/159", "name": "Spiky Energy", "qty": 3, "price": 3.26}, {"set": "SV09: Journey Together", "num": "", "name": "N's Reshiram", "qty": 31, "price": 19.49}, {"set": "SV09: Journey Together", "num": "", "name": "Mimikyu ex", "qty": 114, "price": 2.02}, {"set": "SV09: Journey Together", "num": "", "name": "Tyranitar", "qty": 14, "price": 0.25}, {"set": "SV09: Journey Together", "num": "", "name": "Hop's Dubwool", "qty": 3, "price": 0.19}, {"set": "SV10: Destined Rivals (DRI)", "num": "122/182", "name": "Team Rocket's Crobat ex", "qty": 92, "price": 0.68}, {"set": "SV10: Destined Rivals (DRI)", "num": "186/182", "name": "Crustle", "qty": 5, "price": 2.42}, {"set": "SV10: Destined Rivals (DRI)", "num": "197/182", "name": "Rotom", "qty": 56, "price": 3.2}, {"set": "SV10: Destined Rivals (DRI)", "num": "198/182", "name": "Team Rocket's Orbeetle", "qty": 17, "price": 2.76}, {"set": "SV10: Destined Rivals (DRI)", "num": "205/182", "name": "Arven's Greedent", "qty": 3, "price": 2.45}, {"set": "SV10: Destined Rivals (DRI)", "num": "213/182", "name": "Team Rocket's Mewtwo ex", "qty": 45, "price": 16.96}, {"set": "SV10: Destined Rivals (DRI)", "num": "215/182", "name": "Cynthia's Garchomp ex", "qty": 30, "price": 4.11}, {"set": "SV10: Destined Rivals (DRI)", "num": "219/182", "name": "Team Rocket's Persian ex", "qty": 1, "price": 3.29}, {"set": "SV10: Destined Rivals (DRI)", "num": "228/182", "name": "Yanmega ex", "qty": 10, "price": 15.16}, {"set": "SV10: Destined Rivals (DRI)", "num": "229/182", "name": "Team Rocket's Moltres ex", "qty": 38, "price": 76.79}, {"set": "SV10: Destined Rivals (DRI)", "num": "231/182", "name": "Team Rocket's Mewtwo ex", "qty": 24, "price": 378.19}, {"set": "SV10: Destined Rivals (DRI)", "num": "240/182", "name": "Team Rocket's Mewtwo ex", "qty": 9, "price": 50.22}, {"set": "SV10: Destined Rivals (DRI)", "num": "", "name": "Team Rocket's Moltres ex", "qty": 193, "price": 0.8}, {"set": "SV10: Destined Rivals (DRI)", "num": "", "name": "Rabsca ex", "qty": 6, "price": 0.5}, {"set": "SV10: Destined Rivals (DRI)", "num": "", "name": "Heat Rotom", "qty": 12, "price": 0.19}, {"set": "SV: Black Bolt (BLK)", "num": "104/086", "name": "Palpitoad", "qty": 1, "price": 9.43}, {"set": "SV: Black Bolt (BLK)", "num": "127/086", "name": "Conkeldurr", "qty": 3, "price": 28.93}, {"set": "SV: Black Bolt (BLK)", "num": "129/086", "name": "Dwebble", "qty": 4, "price": 48.2}, {"set": "SV: Black Bolt (BLK)", "num": "133/086", "name": "Whirlipede", "qty": 7, "price": 6.45}, {"set": "SV: Black Bolt (BLK)", "num": "143/086", "name": "Bisharp", "qty": 31, "price": 11.05}, {"set": "SV: Black Bolt (BLK)", "num": "154/086", "name": "Rufflet", "qty": 4, "price": 7.76}, {"set": "SV: Black Bolt (BLK)", "num": "162/086", "name": "Fennel", "qty": 13, "price": 1.14}, {"set": "SV: Black Bolt (BLK)", "num": "172/086", "name": "Zekrom ex", "qty": 1, "price": 603.19}, {"set": "SV: Black Bolt (BLK)", "num": "", "name": "Victini", "qty": 4, "price": 0.21}, {"set": "SV: Paldean Fates (PAF)", "num": "110/091", "name": "Charmeleon", "qty": 5, "price": 14.02}, {"set": "SV: Paldean Fates (PAF)", "num": "114/091", "name": "Charcadet", "qty": 6, "price": 6.99}, {"set": "SV: Paldean Fates (PAF)", "num": "128/091", "name": "Frigibax", "qty": 3, "price": 4.0}, {"set": "SV: Paldean Fates (PAF)", "num": "131/091", "name": "Pikachu", "qty": 16, "price": 73.91}, {"set": "SV: Paldean Fates (PAF)", "num": "217/091", "name": "Gardevoir ex", "qty": 9, "price": 7.92}, {"set": "SV: Paldean Fates (PAF)", "num": "220/091", "name": "Noivern ex", "qty": 3, "price": 1.71}, {"set": "SV: Paldean Fates (PAF)", "num": "231/091", "name": "Paldean Student", "qty": 4, "price": 0.65}, {"set": "SV: Paldean Fates (PAF)", "num": "237/091", "name": "Iono", "qty": 13, "price": 24.48}, {"set": "SV: Paldean Fates (PAF)", "num": "", "name": "Jigglypuff", "qty": 8, "price": 22.46}, {"set": "SV: Paldean Fates (PAF)", "num": "", "name": "Oddish", "qty": 5, "price": 10.34}, {"set": "SV: Paldean Fates (PAF)", "num": "", "name": "Scyther", "qty": 7, "price": 10.19}, {"set": "SV: Paldean Fates (PAF)", "num": "", "name": "Sableye", "qty": 15, "price": 9.57}, {"set": "SV: Paldean Fates (PAF)", "num": "", "name": "Chien-Pao ex", "qty": 1, "price": 9.27}, {"set": "SV: Paldean Fates (PAF)", "num": "", "name": "Arven", "qty": 21, "price": 8.38}, {"set": "SV: Paldean Fates (PAF)", "num": "", "name": "Starmie", "qty": 4, "price": 8.37}, {"set": "SV: Paldean Fates (PAF)", "num": "", "name": "Vileplume", "qty": 6, "price": 8.07}, {"set": "SV: Paldean Fates (PAF)", "num": "", "name": "Pidgey", "qty": 9, "price": 7.14}, {"set": "SV: Paldean Fates (PAF)", "num": "", "name": "Wo-Chien ex", "qty": 3, "price": 6.64}, {"set": "SV: Paldean Fates (PAF)", "num": "", "name": "Alakazam ex", "qty": 21, "price": 6.06}, {"set": "SV: Paldean Fates (PAF)", "num": "", "name": "Ting-Lu ex", "qty": 7, "price": 5.51}, {"set": "SV: Paldean Fates (PAF)", "num": "", "name": "Voltorb", "qty": 5, "price": 5.04}, {"set": "SV: Paldean Fates (PAF)", "num": "", "name": "Baxcalibur", "qty": 8, "price": 4.3}, {"set": "SV: Paldean Fates (PAF)", "num": "", "name": "Pawniard", "qty": 8, "price": 2.91}, {"set": "SV: Paldean Fates (PAF)", "num": "", "name": "Nest Ball", "qty": 13, "price": 0.2}, {"set": "SV: Prismatic Evolutions", "num": "132/131", "name": "Amarys", "qty": 11, "price": 0.58}, {"set": "SV: Prismatic Evolutions", "num": "148/131", "name": "Hearthflame Mask Ogerpon ex", "qty": 10, "price": 16.59}, {"set": "SV: Prismatic Evolutions", "num": "150/131", "name": "Glaceon ex", "qty": 9, "price": 257.53}, {"set": "SV: Prismatic Evolutions", "num": "179/131", "name": "Pikachu ex", "qty": 8, "price": 46.05}, {"set": "SV: Prismatic Evolutions", "num": "", "name": "Roaring Moon ex", "qty": 7, "price": 162.14}, {"set": "SV: Prismatic Evolutions", "num": "", "name": "Gholdengo ex", "qty": 8, "price": 43.9}, {"set": "SV: Prismatic Evolutions", "num": "", "name": "Eri", "qty": 17, "price": 0.99}, {"set": "SV: Prismatic Evolutions", "num": "", "name": "Mela", "qty": 20, "price": 0.67}, {"set": "SV: Prismatic Evolutions", "num": "", "name": "Raifort", "qty": 22, "price": 0.63}, {"set": "SV: Prismatic Evolutions", "num": "", "name": "Sparkling Crystal", "qty": 24, "price": 0.32}, {"set": "SV: Prismatic Evolutions (PRE)", "num": "006/131", "name": "Leafeon ex", "qty": 8, "price": 4.31}, {"set": "SV: Prismatic Evolutions (PRE)", "num": "075/131", "name": "Eevee ex", "qty": 11, "price": 5.32}, {"set": "SV: Prismatic Evolutions (PRE)", "num": "", "name": "Jolteon (Master Ball Pattern)", "qty": 3, "price": 27.36}, {"set": "SV: Prismatic Evolutions (PRE)", "num": "", "name": "Shaymin (Master Ball Pattern)", "qty": 3, "price": 7.07}, {"set": "SV: Prismatic Evolutions (PRE)", "num": "", "name": "Umbreon (Poke Ball Pattern)", "qty": 18, "price": 2.64}, {"set": "SV: Prismatic Evolutions (PRE)", "num": "", "name": "Drakloak (Master Ball Pattern)", "qty": 3, "price": 2.45}, {"set": "SV: Prismatic Evolutions (PRE)", "num": "", "name": "Duskull (Master Ball Pattern)", "qty": 3, "price": 2.37}, {"set": "SV: Prismatic Evolutions (PRE)", "num": "", "name": "Dreepy (Master Ball Pattern)", "qty": 6, "price": 2.24}, {"set": "SV: Prismatic Evolutions (PRE)", "num": "", "name": "Larvitar (Master Ball Pattern)", "qty": 1, "price": 2.13}, {"set": "SV: Prismatic Evolutions (PRE)", "num": "", "name": "Applin (Master Ball Pattern)", "qty": 4, "price": 1.89}, {"set": "SV: Prismatic Evolutions (PRE)", "num": "", "name": "Buneary (Master Ball Pattern)", "qty": 4, "price": 1.25}, {"set": "SV: Prismatic Evolutions (PRE)", "num": "", "name": "Heatran (Master Ball Pattern)", "qty": 13, "price": 1.15}, {"set": "SV: Scarlet & Violet 151 (MEW)", "num": "168/165", "name": "Charmander", "qty": 12, "price": 90.23}, {"set": "SV: Scarlet & Violet 151 (MEW)", "num": "196/165", "name": "Erika's Invitation", "qty": 25, "price": 6.26}, {"set": "SV: Scarlet & Violet 151 (MEW)", "num": "", "name": "Gengar", "qty": 35, "price": 2.57}, {"set": "SV: Scarlet & Violet 151 (MEW)", "num": "", "name": "Mewtwo", "qty": 75, "price": 2.34}, {"set": "SV: Scarlet & Violet 151 (MEW)", "num": "", "name": "Aerodactyl", "qty": 25, "price": 0.43}, {"set": "SV: Scarlet & Violet 151 (MEW)", "num": "", "name": "Dratini", "qty": 162, "price": 0.22}, {"set": "SV: Scarlet & Violet Promo Cards (SVP)", "num": "013", "name": "Miraidon", "qty": 3, "price": 5.3}, {"set": "SV: Scarlet & Violet Promo Cards (SVP)", "num": "044", "name": "Charmander", "qty": 23, "price": 50.86}, {"set": "SV: Scarlet & Violet Promo Cards (SVP)", "num": "052", "name": "Mewtwo", "qty": 19, "price": 40.17}, {"set": "SV: Scarlet & Violet Promo Cards (SVP)", "num": "053", "name": "Mew ex", "qty": 16, "price": 62.5}, {"set": "SV: Scarlet & Violet Promo Cards (SVP)", "num": "066", "name": "Iron Bundle", "qty": 6, "price": 2.3}, {"set": "SV: Scarlet & Violet Promo Cards (SVP)", "num": "073", "name": "Iron Treads ex", "qty": 12, "price": 0.88}, {"set": "SV: Scarlet & Violet Promo Cards (SVP)", "num": "075", "name": "Mimikyu", "qty": 31, "price": 11.52}, {"set": "SV: Scarlet & Violet Promo Cards (SVP)", "num": "097", "name": "Flutter Mane", "qty": 98, "price": 2.96}, {"set": "SV: Scarlet & Violet Promo Cards (SVP)", "num": "124", "name": "Iono", "qty": 13, "price": 11.75}, {"set": "SV: Scarlet & Violet Promo Cards (SVP)", "num": "129", "name": "Pecharunt", "qty": 47, "price": 1.33}, {"set": "SV: Scarlet & Violet Promo Cards (SVP)", "num": "130", "name": "Kingambit", "qty": 9, "price": 4.23}, {"set": "SV: Scarlet & Violet Promo Cards (SVP)", "num": "173", "name": "Eevee", "qty": 29, "price": 8.76}, {"set": "SV: Scarlet & Violet Promo Cards (SVP)", "num": "176", "name": "Umbreon ex", "qty": 32, "price": 27.17}, {"set": "SV: Scarlet & Violet Promo Cards (SVP)", "num": "209", "name": "Thundurus", "qty": 74, "price": 1.29}, {"set": "SV: Scarlet & Violet Promo Cards (SVP)", "num": "", "name": "Mimikyu", "qty": 4, "price": 65.92}, {"set": "SV: Scarlet & Violet Promo Cards (SVP)", "num": "", "name": "Marnie\u2019s Morpeko", "qty": 22, "price": 53.39}, {"set": "SV: Scarlet and Violet 151 (MEW)", "num": "003/165", "name": "Venusaur ex", "qty": 12, "price": 1.37}, {"set": "SV: Scarlet and Violet 151 (MEW)", "num": "006/165", "name": "Charizard ex", "qty": 17, "price": 8.62}, {"set": "SV: Scarlet and Violet 151 (MEW)", "num": "009/165", "name": "Blastoise ex", "qty": 189, "price": 2.57}, {"set": "SV: Scarlet and Violet 151 (MEW)", "num": "065/165", "name": "Alakazam ex", "qty": 13, "price": 1.69}, {"set": "SV: Scarlet and Violet 151 (MEW)", "num": "145/165", "name": "Zapdos ex", "qty": 49, "price": 1.99}, {"set": "SV: Scarlet and Violet 151 (MEW)", "num": "170/165", "name": "Squirtle", "qty": 20, "price": 90.22}, {"set": "SV: Scarlet and Violet 151 (MEW)", "num": "171/165", "name": "Wartortle", "qty": 23, "price": 51.81}, {"set": "SV: Scarlet and Violet 151 (MEW)", "num": "191/165", "name": "Jynx ex", "qty": 14, "price": 5.69}, {"set": "SV: Scarlet and Violet 151 (MEW)", "num": "195/165", "name": "Daisy's Help", "qty": 13, "price": 3.1}, {"set": "SV: Scarlet and Violet 151 (MEW)", "num": "199/165", "name": "Charizard ex", "qty": 28, "price": 320.91}, {"set": "SV: Scarlet and Violet 151 (MEW)", "num": "", "name": "Magikarp", "qty": 46, "price": 0.21}, {"set": "SV: Scarlet and Violet 151 (MEW)", "num": "", "name": "Diglett", "qty": 21, "price": 0.17}, {"set": "SV: Shrouded Fable (SFA)", "num": "037/064", "name": "Munkidori ex", "qty": 12, "price": 0.59}, {"set": "SV: Shrouded Fable (SFA)", "num": "069/064", "name": "Dusclops", "qty": 16, "price": 26.34}, {"set": "SV: Shrouded Fable (SFA)", "num": "070/064", "name": "Dusknoir", "qty": 14, "price": 31.66}, {"set": "SV: Shrouded Fable (SFA)", "num": "079/064", "name": "Bewear", "qty": 15, "price": 24.44}, {"set": "SV: Shrouded Fable (SFA)", "num": "083/064", "name": "Munkidori ex", "qty": 6, "price": 2.38}, {"set": "SV: Shrouded Fable (SFA)", "num": "091/064", "name": "Munkidori ex", "qty": 12, "price": 17.24}, {"set": "SV: Shrouded Fable (SFA)", "num": "", "name": "Okidogi", "qty": 9, "price": 13.95}, {"set": "SV: White Flare (WHT)", "num": "102/086", "name": "Lampent", "qty": 31, "price": 16.24}, {"set": "SV: White Flare (WHT)", "num": "106/086", "name": "Dewott", "qty": 1, "price": 16.84}, {"set": "SV: White Flare (WHT)", "num": "122/086", "name": "Yamask", "qty": 12, "price": 9.08}, {"set": "SV: White Flare (WHT)", "num": "125/086", "name": "Gothorita", "qty": 5, "price": 18.32}, {"set": "SV: White Flare (WHT)", "num": "139/086", "name": "Scrafty", "qty": 13, "price": 21.28}, {"set": "SV: White Flare (WHT)", "num": "143/086", "name": "Zoroark", "qty": 12, "price": 75.41}, {"set": "SV: White Flare (WHT)", "num": "144/086", "name": "Vullaby", "qty": 3, "price": 9.31}, {"set": "SV: White Flare (WHT)", "num": "146/086", "name": "Deino", "qty": 19, "price": 16.06}, {"set": "SV: White Flare (WHT)", "num": "147/086", "name": "Zweilous", "qty": 6, "price": 11.79}, {"set": "SV: White Flare (WHT)", "num": "161/086", "name": "Hydreigon ex", "qty": 3, "price": 1.04}, {"set": "SV: White Flare (WHT)", "num": "163/086", "name": "Harlequin", "qty": 3, "price": 0.94}, {"set": "SV: White Flare (WHT)", "num": "168/086", "name": "Jellicent ex", "qty": 3, "price": 24.64}, {"set": "SWSH01: Sword & Shield Base Set (SWSH01)", "num": "", "name": "Marnie (Full Art)", "qty": 19, "price": 33.72}, {"set": "SWSH01: Sword & Shield Base Set (SWSH01)", "num": "", "name": "Quick Ball (Secret)", "qty": 18, "price": 10.9}, {"set": "SWSH01: Sword & Shield Base Set (SWSH01)", "num": "", "name": "Snorlax V", "qty": 2, "price": 10.07}, {"set": "SWSH01: Sword & Shield Base Set (SWSH01)", "num": "", "name": "Zacian V (Full Art)", "qty": 4, "price": 5.93}, {"set": "SWSH01: Sword & Shield Base Set (SWSH01)", "num": "", "name": "Sableye V", "qty": 3, "price": 1.95}, {"set": "SWSH01: Sword & Shield Base Set (SWSH01)", "num": "", "name": "Morpeko V", "qty": 36, "price": 1.18}, {"set": "SWSH01: Sword & Shield Base Set (SWSH01)", "num": "", "name": "Morpeko", "qty": 39, "price": 0.53}, {"set": "SWSH01: Sword & Shield Base Set (SWSH01)", "num": "", "name": "Metal Energy", "qty": 21, "price": 0.49}, {"set": "SWSH01: Sword & Shield Base Set (SWSH01)", "num": "", "name": "Lucky Egg", "qty": 13, "price": 0.11}, {"set": "SWSH02: Rebel Clash (SWSH02)", "num": "", "name": "Sonia (Full Art)", "qty": 1, "price": 20.84}, {"set": "SWSH02: Rebel Clash (SWSH02)", "num": "", "name": "Toxtricity VMAX", "qty": 1, "price": 4.66}, {"set": "SWSH03: Darkness Ablaze (SWSH03)", "num": "", "name": "Charizard VMAX", "qty": 11, "price": 40.54}, {"set": "SWSH03: Darkness Ablaze (SWSH03)", "num": "", "name": "Scizor VMAX", "qty": 1, "price": 3.68}, {"set": "SWSH03: Darkness Ablaze (SWSH03)", "num": "", "name": "Eternatus VMAX", "qty": 3, "price": 3.59}, {"set": "SWSH03: Darkness Ablaze (SWSH03)", "num": "", "name": "Houndoom V", "qty": 34, "price": 2.6}, {"set": "SWSH03: Darkness Ablaze (SWSH03)", "num": "", "name": "Centiskorch VMAX", "qty": 1, "price": 1.93}, {"set": "SWSH03: Darkness Ablaze (SWSH03)", "num": "", "name": "Galarian Stunfisk V (Full Art)", "qty": 3, "price": 1.3}, {"set": "SWSH03: Darkness Ablaze (SWSH03)", "num": "", "name": "Muk", "qty": 30, "price": 0.1}, {"set": "SWSH03: Darkness Ablaze (SWSH03)", "num": "", "name": "Vanillite", "qty": 19, "price": 0.09}, {"set": "SWSH03: Darkness Ablaze (SWSH03)", "num": "", "name": "Diglett", "qty": 2, "price": 0.08}, {"set": "SWSH03: Darkness Ablaze (SWSH03)", "num": "", "name": "Pansage", "qty": 22, "price": 0.06}, {"set": "SWSH04: Vivid Voltage (SWSH04)", "num": "", "name": "Pikachu VMAX (Secret)", "qty": 3, "price": 169.36}, {"set": "SWSH04: Vivid Voltage (SWSH04)", "num": "", "name": "Bea (Full Art)", "qty": 21, "price": 8.16}, {"set": "SWSH04: Vivid Voltage (SWSH04)", "num": "", "name": "Galarian Darmanitan VMAX (Secret)", "qty": 4, "price": 6.41}, {"set": "SWSH04: Vivid Voltage (SWSH04)", "num": "", "name": "Oranguru (Secret)", "qty": 3, "price": 4.57}, {"set": "SWSH04: Vivid Voltage (SWSH04)", "num": "", "name": "Charizard", "qty": 11, "price": 4.26}, {"set": "SWSH04: Vivid Voltage (SWSH04)", "num": "", "name": "Snorlax", "qty": 13, "price": 3.99}, {"set": "SWSH04: Vivid Voltage (SWSH04)", "num": "", "name": "Celebi", "qty": 4, "price": 3.81}, {"set": "SWSH04: Vivid Voltage (SWSH04)", "num": "", "name": "Zarude V (Full Art)", "qty": 3, "price": 3.42}, {"set": "SWSH04: Vivid Voltage (SWSH04)", "num": "", "name": "Zacian", "qty": 13, "price": 3.08}, {"set": "SWSH04: Vivid Voltage (SWSH04)", "num": "", "name": "Galarian Sirfetch'd V (Full Art)", "qty": 10, "price": 2.46}, {"set": "SWSH04: Vivid Voltage (SWSH04)", "num": "", "name": "Telescopic Sight (Secret)", "qty": 17, "price": 2.11}, {"set": "SWSH04: Vivid Voltage (SWSH04)", "num": "", "name": "Hero's Medal (Secret)", "qty": 3, "price": 2.03}, {"set": "SWSH04: Vivid Voltage (SWSH04)", "num": "", "name": "Memory Capsule (Secret)", "qty": 3, "price": 1.84}, {"set": "SWSH04: Vivid Voltage (SWSH04)", "num": "", "name": "Orbeetle VMAX", "qty": 5, "price": 1.55}, {"set": "SWSH04: Vivid Voltage (SWSH04)", "num": "", "name": "Coalossal VMAX", "qty": 3, "price": 1.42}, {"set": "SWSH04: Vivid Voltage (SWSH04)", "num": "", "name": "Togekiss V", "qty": 8, "price": 1.08}, {"set": "SWSH04: Vivid Voltage (SWSH04)", "num": "", "name": "Aegislash V", "qty": 12, "price": 0.83}, {"set": "SWSH04: Vivid Voltage (SWSH04)", "num": "", "name": "Talonflame V", "qty": 15, "price": 0.77}, {"set": "SWSH04: Vivid Voltage (SWSH04)", "num": "", "name": "Zarude V", "qty": 21, "price": 0.61}, {"set": "SWSH04: Vivid Voltage (SWSH04)", "num": "", "name": "Coalossal V", "qty": 18, "price": 0.6}, {"set": "SWSH04: Vivid Voltage (SWSH04)", "num": "", "name": "Zapdos", "qty": 20, "price": 0.53}, {"set": "SWSH04: Vivid Voltage (SWSH04)", "num": "", "name": "Galarian Meowth", "qty": 5, "price": 0.33}, {"set": "SWSH04: Vivid Voltage (SWSH04)", "num": "", "name": "Eevee", "qty": 51, "price": 0.32}, {"set": "SWSH04: Vivid Voltage (SWSH04)", "num": "", "name": "Charmander", "qty": 88, "price": 0.29}, {"set": "SWSH05: Battle Styles (SWSH05)", "num": "", "name": "Tyranitar V (Alternate Full Art)", "qty": 3, "price": 237.54}, {"set": "SWSH05: Battle Styles (SWSH05)", "num": "", "name": "Empoleon V (Alternate Full Art)", "qty": 6, "price": 63.63}, {"set": "SWSH05: Battle Styles (SWSH05)", "num": "", "name": "Single Strike Urshifu V (Alternate Full Art)", "qty": 10, "price": 18.97}, {"set": "SWSH05: Battle Styles (SWSH05)", "num": "", "name": "Rapid Strike Urshifu V (Alternate Full Art)", "qty": 11, "price": 16.34}, {"set": "SWSH05: Battle Styles (SWSH05)", "num": "", "name": "Cheryl (Full Art)", "qty": 1, "price": 7.66}, {"set": "SWSH05: Battle Styles (SWSH05)", "num": "", "name": "Rapid Strike Urshifu V (Full Art)", "qty": 3, "price": 4.2}, {"set": "SWSH05: Battle Styles (SWSH05)", "num": "", "name": "Single Strike Energy (Secret)", "qty": 4, "price": 1.88}, {"set": "SWSH05: Battle Styles (SWSH05)", "num": "", "name": "Rapid Strike Urshifu VMAX", "qty": 32, "price": 1.51}, {"set": "SWSH05: Battle Styles (SWSH05)", "num": "", "name": "Single Strike Style Mustard (Full Art)", "qty": 7, "price": 1.41}, {"set": "SWSH05: Battle Styles (SWSH05)", "num": "", "name": "Single Strike Urshifu VMAX", "qty": 20, "price": 1.33}, {"set": "SWSH05: Battle Styles (SWSH05)", "num": "", "name": "Empoleon V", "qty": 5, "price": 1.06}, {"set": "SWSH05: Battle Styles (SWSH05)", "num": "", "name": "Tyranitar V", "qty": 23, "price": 0.95}, {"set": "SWSH05: Battle Styles (SWSH05)", "num": "", "name": "Rapid Strike Urshifu V", "qty": 9, "price": 0.75}, {"set": "SWSH05: Battle Styles (SWSH05)", "num": "", "name": "Rapid Strike Scroll of Swirls", "qty": 11, "price": 0.15}, {"set": "SWSH05: Battle Styles (SWSH05)", "num": "", "name": "Bruxish", "qty": 1, "price": 0.1}, {"set": "SWSH06: Chilling Reign (SWSH06)", "num": "", "name": "Galarian Slowking V (Alternate Full Art)", "qty": 12, "price": 116.3}, {"set": "SWSH06: Chilling Reign (SWSH06)", "num": "", "name": "Shadow Rider Calyrex V (Alternate Full Art)", "qty": 4, "price": 28.6}, {"set": "SWSH06: Chilling Reign (SWSH06)", "num": "", "name": "Galarian Moltres V (Full Art)", "qty": 3, "price": 16.74}, {"set": "SWSH06: Chilling Reign (SWSH06)", "num": "", "name": "Karen's Conviction (Full Art)", "qty": 3, "price": 14.75}, {"set": "SWSH06: Chilling Reign (SWSH06)", "num": "", "name": "Galarian Zapdos V (Full Art)", "qty": 3, "price": 8.67}, {"set": "SWSH06: Chilling Reign (SWSH06)", "num": "", "name": "Shadow Rider Calyrex V (Full Art)", "qty": 3, "price": 5.31}, {"set": "SWSH06: Chilling Reign (SWSH06)", "num": "", "name": "Celebi VMAX", "qty": 19, "price": 3.68}, {"set": "SWSH06: Chilling Reign (SWSH06)", "num": "", "name": "Siebold (Full Art)", "qty": 4, "price": 3.0}, {"set": "SWSH06: Chilling Reign (SWSH06)", "num": "", "name": "Galarian Articuno V", "qty": 22, "price": 1.62}, {"set": "SWSH06: Chilling Reign (SWSH06)", "num": "", "name": "Blissey V", "qty": 30, "price": 1.09}, {"set": "SWSH07: Evolving Skies (SWSH07)", "num": "", "name": "Dragonite V (Alternate Full Art)", "qty": 3, "price": 497.16}, {"set": "SWSH07: Evolving Skies (SWSH07)", "num": "", "name": "Rayquaza V (Alternate Full Art)", "qty": 46, "price": 483.57}, {"set": "SWSH07: Evolving Skies (SWSH07)", "num": "", "name": "Umbreon V (Alternate Full Art)", "qty": 11, "price": 380.03}, {"set": "SWSH07: Evolving Skies (SWSH07)", "num": "", "name": "Sylveon V (Alternate Full Art)", "qty": 12, "price": 198.08}, {"set": "SWSH07: Evolving Skies (SWSH07)", "num": "", "name": "Leafeon V (Alternate Full Art)", "qty": 4, "price": 144.67}, {"set": "SWSH07: Evolving Skies (SWSH07)", "num": "", "name": "Noivern V (Alternate Full Art)", "qty": 15, "price": 77.12}, {"set": "SWSH07: Evolving Skies (SWSH07)", "num": "", "name": "Rayquaza V (Full Art)", "qty": 3, "price": 68.09}, {"set": "SWSH07: Evolving Skies (SWSH07)", "num": "", "name": "Sylveon VMAX (Secret)", "qty": 13, "price": 58.23}, {"set": "SWSH07: Evolving Skies (SWSH07)", "num": "", "name": "Gyarados VMAX (Secret)", "qty": 10, "price": 46.98}, {"set": "SWSH07: Evolving Skies (SWSH07)", "num": "", "name": "Espeon V (Full Art)", "qty": 3, "price": 25.97}, {"set": "SWSH07: Evolving Skies (SWSH07)", "num": "", "name": "Gyarados V (Full Art)", "qty": 27, "price": 19.38}, {"set": "SWSH07: Evolving Skies (SWSH07)", "num": "", "name": "Sylveon VMAX", "qty": 6, "price": 18.66}, {"set": "SWSH07: Evolving Skies (SWSH07)", "num": "", "name": "Froslass (Secret)", "qty": 9, "price": 10.1}, {"set": "SWSH07: Evolving Skies (SWSH07)", "num": "", "name": "Gyarados VMAX", "qty": 11, "price": 8.31}, {"set": "SWSH07: Evolving Skies (SWSH07)", "num": "", "name": "Umbreon V", "qty": 2, "price": 7.81}, {"set": "SWSH07: Evolving Skies (SWSH07)", "num": "", "name": "Dracozolt VMAX (Secret)", "qty": 5, "price": 7.72}, {"set": "SWSH07: Evolving Skies (SWSH07)", "num": "", "name": "Glaceon VMAX", "qty": 22, "price": 7.3}, {"set": "SWSH07: Evolving Skies (SWSH07)", "num": "", "name": "Trevenant V (Full Art)", "qty": 7, "price": 3.4}, {"set": "SWSH07: Evolving Skies (SWSH07)", "num": "", "name": "Espeon V", "qty": 16, "price": 3.08}, {"set": "SWSH07: Evolving Skies (SWSH07)", "num": "", "name": "Arctovish V (Full Art)", "qty": 4, "price": 2.97}, {"set": "SWSH07: Evolving Skies (SWSH07)", "num": "", "name": "Glaceon V", "qty": 10, "price": 2.88}, {"set": "SWSH07: Evolving Skies (SWSH07)", "num": "", "name": "Rayquaza V", "qty": 105, "price": 2.71}, {"set": "SWSH07: Evolving Skies (SWSH07)", "num": "", "name": "Salamence", "qty": 48, "price": 0.61}, {"set": "SWSH07: Evolving Skies (SWSH07)", "num": "", "name": "Dream Ball", "qty": 13, "price": 0.16}, {"set": "SWSH07: Evolving Skies (SWSH07)", "num": "", "name": "Nickit", "qty": 3, "price": 0.12}, {"set": "SWSH07: Evolving Skies (SWSH07)", "num": "", "name": "Luvdisc", "qty": 2, "price": 0.05}, {"set": "SWSH08: Fusion Strike (SWSH08)", "num": "", "name": "Gengar VMAX (Alternate Art Secret)", "qty": 12, "price": 1034.15}, {"set": "SWSH08: Fusion Strike (SWSH08)", "num": "", "name": "Mew VMAX (Alternate Art Secret)", "qty": 8, "price": 241.13}, {"set": "SWSH08: Fusion Strike (SWSH08)", "num": "", "name": "Gengar VMAX", "qty": 22, "price": 41.82}, {"set": "SWSH08: Fusion Strike (SWSH08)", "num": "", "name": "Gengar V", "qty": 79, "price": 11.17}, {"set": "SWSH08: Fusion Strike (SWSH08)", "num": "", "name": "Mew V", "qty": 40, "price": 4.06}, {"set": "SWSH08: Fusion Strike (SWSH08)", "num": "", "name": "Chandelure VMAX", "qty": 9, "price": 3.53}, {"set": "SWSH08: Fusion Strike (SWSH08)", "num": "", "name": "Greninja V", "qty": 20, "price": 3.17}, {"set": "SWSH08: Fusion Strike (SWSH08)", "num": "", "name": "Cinderace VMAX", "qty": 1, "price": 2.58}, {"set": "SWSH08: Fusion Strike (SWSH08)", "num": "", "name": "Schoolgirl (Full Art)", "qty": 18, "price": 1.78}, {"set": "SWSH08: Fusion Strike (SWSH08)", "num": "", "name": "Tsareena V (Full Art)", "qty": 7, "price": 1.74}, {"set": "SWSH08: Fusion Strike (SWSH08)", "num": "", "name": "Lucario V", "qty": 6, "price": 1.52}, {"set": "SWSH08: Fusion Strike (SWSH08)", "num": "", "name": "Feraligatr", "qty": 6, "price": 0.34}, {"set": "SWSH08: Fusion Strike (SWSH08)", "num": "", "name": "Latias", "qty": 13, "price": 0.27}, {"set": "SWSH08: Fusion Strike (SWSH08)", "num": "", "name": "Trubbish", "qty": 12, "price": 0.24}, {"set": "SWSH08: Fusion Strike (SWSH08)", "num": "", "name": "Morpeko (109)", "qty": 22, "price": 0.19}, {"set": "SWSH08: Fusion Strike (SWSH08)", "num": "", "name": "Bug Catcher", "qty": 24, "price": 0.13}, {"set": "SWSH08: Fusion Strike (SWSH08)", "num": "", "name": "Mankey", "qty": 26, "price": 0.06}, {"set": "SWSH09: Brilliant Stars (SWSH09)", "num": "", "name": "Charizard V (Alternate Full Art)", "qty": 4, "price": 278.8}, {"set": "SWSH09: Brilliant Stars (SWSH09)", "num": "", "name": "Arceus V (Alternate Full Art)", "qty": 11, "price": 60.28}, {"set": "SWSH09: Brilliant Stars (SWSH09)", "num": "", "name": "Galarian Moltres V (Secret)", "qty": 13, "price": 21.97}, {"set": "SWSH09: Brilliant Stars (SWSH09)", "num": "", "name": "Mimikyu VMAX", "qty": 3, "price": 13.25}, {"set": "SWSH09: Brilliant Stars (SWSH09)", "num": "", "name": "Honchkrow V (Alternate Full Art)", "qty": 12, "price": 12.08}, {"set": "SWSH09: Brilliant Stars (SWSH09)", "num": "", "name": "Arceus V (Full Art)", "qty": 26, "price": 10.77}, {"set": "SWSH09: Brilliant Stars (SWSH09)", "num": "", "name": "Morpeko V", "qty": 18, "price": 1.6}, {"set": "SWSH09: Brilliant Stars (SWSH09)", "num": "", "name": "Granbull V (Full Art)", "qty": 5, "price": 1.48}, {"set": "SWSH09: Brilliant Stars (SWSH09)", "num": "", "name": "Barry (Full Art)", "qty": 19, "price": 1.47}, {"set": "SWSH09: Brilliant Stars (SWSH09)", "num": "", "name": "Honchkrow V (Full Art)", "qty": 5, "price": 1.34}, {"set": "SWSH09: Brilliant Stars (SWSH09)", "num": "", "name": "Fighting Energy (2022 Unnumbered)", "qty": 33, "price": 0.4}, {"set": "SWSH09: Brilliant Stars (SWSH09)", "num": "", "name": "Garchomp", "qty": 67, "price": 0.39}, {"set": "SWSH09: Brilliant Stars (SWSH09)", "num": "", "name": "Muk", "qty": 5, "price": 0.2}, {"set": "SWSH09: Brilliant Stars (SWSH09)", "num": "", "name": "Professor's Research", "qty": 7, "price": 0.16}, {"set": "SWSH09: Brilliant Stars (SWSH09)", "num": "", "name": "Friends in Galar", "qty": 8, "price": 0.11}, {"set": "SWSH09: Brilliant Stars (SWSH09)", "num": "", "name": "Golett", "qty": 78, "price": 0.03}, {"set": "SWSH09: Brilliant Stars Trainer Gallery (SWSH09:TG)", "num": "", "name": "Mimikyu V", "qty": 19, "price": 81.96}, {"set": "SWSH09: Brilliant Stars Trainer Gallery (SWSH09:TG)", "num": "", "name": "Mimikyu VMAX", "qty": 8, "price": 74.95}, {"set": "SWSH09: Brilliant Stars Trainer Gallery (SWSH09:TG)", "num": "", "name": "Sylveon V", "qty": 1, "price": 73.12}, {"set": "SWSH09: Brilliant Stars Trainer Gallery (SWSH09:TG)", "num": "", "name": "Vaporeon", "qty": 23, "price": 23.22}, {"set": "SWSH09: Brilliant Stars Trainer Gallery (SWSH09:TG)", "num": "", "name": "Flareon", "qty": 34, "price": 21.49}, {"set": "SWSH09: Brilliant Stars Trainer Gallery (SWSH09:TG)", "num": "", "name": "Zekrom", "qty": 1, "price": 11.83}, {"set": "SWSH09: Brilliant Stars Trainer Gallery (SWSH09:TG)", "num": "", "name": "Houndoom", "qty": 20, "price": 3.49}, {"set": "SWSH09: Brilliant Stars Trainer Gallery (SWSH09:TG)", "num": "", "name": "Dusknoir", "qty": 139, "price": 2.71}, {"set": "SWSH09: Brilliant Stars Trainer Gallery (SWSH09:TG)", "num": "", "name": "Cafe Master", "qty": 4, "price": 1.47}, {"set": "SWSH10: Astral Radiance (SWSH10)", "num": "", "name": "Origin Forme Palkia V (Alternate Full Art)", "qty": 24, "price": 85.09}, {"set": "SWSH10: Astral Radiance (SWSH10)", "num": "", "name": "Origin Forme Dialga V (Alternate Full Art)", "qty": 21, "price": 62.4}, {"set": "SWSH10: Astral Radiance (SWSH10)", "num": "", "name": "Hisuian Lilligant V (Alternate Full Art)", "qty": 4, "price": 27.51}, {"set": "SWSH10: Astral Radiance (SWSH10)", "num": "", "name": "Jirachi V (Full Art)", "qty": 12, "price": 25.23}, {"set": "SWSH10: Astral Radiance (SWSH10)", "num": "", "name": "Hisuian Typhlosion VSTAR (Secret)", "qty": 4, "price": 16.31}, {"set": "SWSH10: Astral Radiance (SWSH10)", "num": "", "name": "Origin Forme Palkia VSTAR (Secret)", "qty": 4, "price": 15.72}, {"set": "SWSH10: Astral Radiance (SWSH10)", "num": "", "name": "Origin Forme Palkia VSTAR (Secret) (208)", "qty": 12, "price": 12.81}, {"set": "SWSH10: Astral Radiance (SWSH10)", "num": "", "name": "Path to the Peak (Secret)", "qty": 3, "price": 11.57}, {"set": "SWSH10: Astral Radiance (SWSH10)", "num": "", "name": "Garchomp V (Full Art)", "qty": 3, "price": 10.02}, {"set": "SWSH10: Astral Radiance (SWSH10)", "num": "", "name": "Hisuian Samurott VSTAR (Secret)", "qty": 3, "price": 8.94}, {"set": "SWSH10: Astral Radiance (SWSH10)", "num": "", "name": "Hisuian Decidueye VSTAR (Secret)", "qty": 3, "price": 7.99}, {"set": "SWSH10: Astral Radiance (SWSH10)", "num": "", "name": "Gardenia's Vigor (Full Art)", "qty": 3, "price": 7.32}, {"set": "SWSH10: Astral Radiance (SWSH10)", "num": "", "name": "Heatran VMAX (Secret)", "qty": 5, "price": 7.07}, {"set": "SWSH10: Astral Radiance (SWSH10)", "num": "", "name": "Hisuian Sneasler V (Full Art)", "qty": 3, "price": 4.87}, {"set": "SWSH10: Astral Radiance (SWSH10)", "num": "", "name": "Zisu (Secret)", "qty": 5, "price": 4.12}, {"set": "SWSH10: Astral Radiance (SWSH10)", "num": "", "name": "Origin Forme Dialga VSTAR", "qty": 14, "price": 2.37}, {"set": "SWSH10: Astral Radiance (SWSH10)", "num": "", "name": "Hisuian Typhlosion VSTAR", "qty": 21, "price": 1.79}, {"set": "SWSH10: Astral Radiance (SWSH10)", "num": "", "name": "Hisuian Lilligant VSTAR", "qty": 14, "price": 1.58}, {"set": "SWSH10: Astral Radiance (SWSH10)", "num": "", "name": "Hisuian Decidueye VSTAR", "qty": 17, "price": 1.52}, {"set": "SWSH10: Astral Radiance (SWSH10)", "num": "", "name": "Lucario V", "qty": 3, "price": 1.44}, {"set": "SWSH10: Astral Radiance (SWSH10)", "num": "", "name": "Hisuian Samurott VSTAR", "qty": 24, "price": 1.41}, {"set": "SWSH10: Astral Radiance (SWSH10)", "num": "", "name": "Starmie V", "qty": 2, "price": 1.05}, {"set": "SWSH10: Astral Radiance (SWSH10)", "num": "", "name": "Oranguru V", "qty": 18, "price": 0.75}, {"set": "SWSH10: Astral Radiance (SWSH10)", "num": "", "name": "Leafeon", "qty": 9, "price": 0.4}, {"set": "SWSH10: Astral Radiance (SWSH10)", "num": "", "name": "Eevee", "qty": 30, "price": 0.37}, {"set": "SWSH10: Astral Radiance (SWSH10)", "num": "", "name": "Whiscash", "qty": 37, "price": 0.23}, {"set": "SWSH10: Astral Radiance (SWSH10)", "num": "", "name": "Supereffective Glasses", "qty": 12, "price": 0.19}, {"set": "SWSH10: Astral Radiance Trainer Gallery (SWSH10:TG)", "num": "", "name": "Galarian Moltres V", "qty": 21, "price": 18.09}, {"set": "SWSH10: Astral Radiance Trainer Gallery (SWSH10:TG)", "num": "", "name": "Galarian Articuno V", "qty": 23, "price": 16.57}, {"set": "SWSH10: Astral Radiance Trainer Gallery (SWSH10:TG)", "num": "", "name": "Galarian Zapdos V", "qty": 4, "price": 14.07}, {"set": "SWSH10: Astral Radiance Trainer Gallery (SWSH10:TG)", "num": "", "name": "Shadow Rider Calyrex V", "qty": 7, "price": 11.67}, {"set": "SWSH10: Astral Radiance Trainer Gallery (SWSH10:TG)", "num": "", "name": "Ice Rider Calyrex V", "qty": 3, "price": 9.0}, {"set": "SWSH10: Astral Radiance Trainer Gallery (SWSH10:TG)", "num": "", "name": "Gardevoir", "qty": 10, "price": 6.28}, {"set": "SWSH10: Astral Radiance Trainer Gallery (SWSH10:TG)", "num": "", "name": "Allister", "qty": 8, "price": 6.18}, {"set": "SWSH10: Astral Radiance Trainer Gallery (SWSH10:TG)", "num": "", "name": "Mightyena", "qty": 24, "price": 4.65}, {"set": "SWSH10: Astral Radiance Trainer Gallery (SWSH10:TG)", "num": "", "name": "Ice Rider Calyrex VMAX (Secret)", "qty": 18, "price": 4.43}, {"set": "SWSH10: Astral Radiance Trainer Gallery (SWSH10:TG)", "num": "", "name": "Frosmoth", "qty": 9, "price": 4.13}, {"set": "SWSH10: Astral Radiance Trainer Gallery (SWSH10:TG)", "num": "", "name": "Shadow Rider Calyrex VMAX (Secret)", "qty": 18, "price": 3.92}, {"set": "SWSH10: Astral Radiance Trainer Gallery (SWSH10:TG)", "num": "", "name": "Kleavor", "qty": 13, "price": 3.18}, {"set": "SWSH10: Astral Radiance Trainer Gallery (SWSH10:TG)", "num": "", "name": "Galarian Obstagoon", "qty": 4, "price": 2.3}, {"set": "SWSH10: Astral Radiance Trainer Gallery (SWSH10:TG)", "num": "", "name": "Abomasnow", "qty": 9, "price": 2.25}, {"set": "SWSH10: Astral Radiance Trainer Gallery (SWSH10:TG)", "num": "", "name": "Wyrdeer", "qty": 6, "price": 2.22}, {"set": "SWSH11: Lost Origin (SWSH11)", "num": "", "name": "Giratina V (Alternate Full Art)", "qty": 3, "price": 851.13}, {"set": "SWSH11: Lost Origin (SWSH11)", "num": "", "name": "Rotom V (Alternate Full Art)", "qty": 23, "price": 27.48}, {"set": "SWSH11: Lost Origin (SWSH11)", "num": "", "name": "Giratina VSTAR", "qty": 39, "price": 2.79}, {"set": "SWSH11: Lost Origin (SWSH11)", "num": "", "name": "Snorlax", "qty": 4, "price": 2.57}, {"set": "SWSH11: Lost Origin (SWSH11)", "num": "", "name": "Hisuian Zoroark VSTAR", "qty": 19, "price": 1.33}, {"set": "SWSH11: Lost Origin (SWSH11)", "num": "", "name": "Pikachu", "qty": 95, "price": 1.13}, {"set": "SWSH11: Lost Origin (SWSH11)", "num": "", "name": "Magnezone VSTAR", "qty": 7, "price": 1.1}, {"set": "SWSH11: Lost Origin (SWSH11)", "num": "", "name": "Kyurem V", "qty": 28, "price": 0.78}, {"set": "SWSH11: Lost Origin (SWSH11)", "num": "", "name": "Lampent", "qty": 87, "price": 0.05}, {"set": "SWSH11: Lost Origin Trainer Gallery (SWSH11: TG)", "num": "", "name": "Gengar", "qty": 22, "price": 44.36}, {"set": "SWSH11: Lost Origin Trainer Gallery (SWSH11: TG)", "num": "", "name": "Pikachu", "qty": 27, "price": 38.39}, {"set": "SWSH11: Lost Origin Trainer Gallery (SWSH11: TG)", "num": "", "name": "Charizard", "qty": 12, "price": 28.08}, {"set": "SWSH11: Lost Origin Trainer Gallery (SWSH11: TG)", "num": "", "name": "Snorlax", "qty": 19, "price": 22.69}, {"set": "SWSH11: Lost Origin Trainer Gallery (SWSH11: TG)", "num": "", "name": "Eternatus V", "qty": 5, "price": 6.01}, {"set": "SWSH11: Lost Origin Trainer Gallery (SWSH11: TG)", "num": "", "name": "Chandelure", "qty": 19, "price": 4.11}, {"set": "SWSH11: Lost Origin Trainer Gallery (SWSH11: TG)", "num": "", "name": "Parasect", "qty": 7, "price": 4.08}, {"set": "SWSH11: Lost Origin Trainer Gallery (SWSH11: TG)", "num": "", "name": "Banette", "qty": 95, "price": 2.79}, {"set": "SWSH11: Lost Origin Trainer Gallery (SWSH11: TG)", "num": "", "name": "Roserade", "qty": 1, "price": 2.55}, {"set": "SWSH11: Lost Origin Trainer Gallery (SWSH11: TG)", "num": "", "name": "Spiritomb", "qty": 91, "price": 2.45}, {"set": "SWSH12: Silver Tempest (SWSH12)", "num": "", "name": "Lugia V (Alternate Full Art)", "qty": 18, "price": 505.76}, {"set": "SWSH12: Silver Tempest (SWSH12)", "num": "", "name": "Lugia V", "qty": 12, "price": 13.06}, {"set": "SWSH12: Silver Tempest (SWSH12)", "num": "", "name": "Regidrago VSTAR (Secret)", "qty": 3, "price": 8.71}, {"set": "SWSH12: Silver Tempest (SWSH12)", "num": "", "name": "Lugia VSTAR", "qty": 13, "price": 7.69}, {"set": "SWSH12: Silver Tempest (SWSH12)", "num": "", "name": "Alolan Vulpix VSTAR", "qty": 25, "price": 2.24}, {"set": "SWSH12: Silver Tempest (SWSH12)", "num": "", "name": "Leafy Camo Poncho (Secret)", "qty": 2, "price": 2.13}, {"set": "SWSH12: Silver Tempest (SWSH12)", "num": "", "name": "Unown VSTAR", "qty": 16, "price": 1.78}, {"set": "SWSH12: Silver Tempest (SWSH12)", "num": "", "name": "Alolan Vulpix V", "qty": 4, "price": 1.73}, {"set": "SWSH12: Silver Tempest (SWSH12)", "num": "", "name": "Dragonite", "qty": 14, "price": 1.38}, {"set": "SWSH12: Silver Tempest (SWSH12)", "num": "", "name": "Serperior VSTAR", "qty": 15, "price": 1.24}, {"set": "SWSH12: Silver Tempest (SWSH12)", "num": "", "name": "Reshiram V", "qty": 11, "price": 1.16}, {"set": "SWSH12: Silver Tempest (SWSH12)", "num": "", "name": "Omastar V", "qty": 11, "price": 0.95}, {"set": "SWSH12: Silver Tempest (SWSH12)", "num": "", "name": "Elgyem", "qty": 55, "price": 0.03}, {"set": "SWSH12: Silver Tempest Trainer Gallery (SWSH12: TG)", "num": "", "name": "Rayquaza VMAX", "qty": 11, "price": 186.69}, {"set": "SWSH12: Silver Tempest Trainer Gallery (SWSH12: TG)", "num": "", "name": "Blaziken V", "qty": 1, "price": 28.31}, {"set": "SWSH12: Silver Tempest Trainer Gallery (SWSH12: TG)", "num": "", "name": "Friends in Galar", "qty": 1, "price": 8.67}, {"set": "SWSH12: Silver Tempest Trainer Gallery (SWSH12: TG)", "num": "", "name": "Jynx", "qty": 3, "price": 3.42}, {"set": "SWSH: Crown Zenith: Galarian Gallery (CRZ:GG)", "num": "", "name": "Duskull", "qty": 53, "price": 4.71}, {"set": "SWSH: Sword & Shield Promo Cards (SWSD)", "num": "SWSH020", "name": "Pikachu", "qty": 8, "price": 108.41}, {"set": "SWSH: Sword & Shield Promo Cards (SWSD)", "num": "SWSH045", "name": "Eternatus VMAX", "qty": 6, "price": 2.5}, {"set": "SWSH: Sword & Shield Promo Cards (SWSD)", "num": "SWSH050", "name": "Charizard V", "qty": 21, "price": 10.84}, {"set": "SWSH: Sword & Shield Promo Cards (SWSD)", "num": "SWSH061", "name": "Pikachu V", "qty": 14, "price": 2.02}, {"set": "SWSH: Sword & Shield Promo Cards (SWSD)", "num": "SWSH063", "name": "Pikachu V", "qty": 23, "price": 6.36}, {"set": "SWSH: Sword & Shield Promo Cards (SWSD)", "num": "SWSH065", "name": "Eevee V", "qty": 31, "price": 6.79}, {"set": "SWSH: Sword & Shield Promo Cards (SWSD)", "num": "SWSH086", "name": "Cramorant V", "qty": 12, "price": 1.07}, {"set": "SWSH: Sword & Shield Promo Cards (SWSD)", "num": "SWSH097", "name": "Dragapult VMAX", "qty": 3, "price": 3.2}, {"set": "SWSH: Sword & Shield Promo Cards (SWSD)", "num": "SWSH109", "name": "Tyranitar V", "qty": 19, "price": 0.83}, {"set": "SWSH: Sword & Shield Promo Cards (SWSD)", "num": "SWSH110", "name": "Crobat V", "qty": 111, "price": 1.13}, {"set": "SWSH: Sword & Shield Promo Cards (SWSD)", "num": "SWSH126", "name": "Galarian Slowpoke", "qty": 14, "price": 7.77}, {"set": "SWSH: Sword & Shield Promo Cards (SWSD)", "num": "SWSH133", "name": "Lance's Charizard V", "qty": 15, "price": 6.99}, {"set": "SWSH: Sword & Shield Promo Cards (SWSD)", "num": "SWSH134", "name": "Dark Sylveon V", "qty": 13, "price": 6.2}, {"set": "SWSH: Sword & Shield Promo Cards (SWSD)", "num": "SWSH143", "name": "Pikachu V", "qty": 3, "price": 12.98}, {"set": "SWSH: Sword & Shield Promo Cards (SWSD)", "num": "SWSH145", "name": "Pikachu V", "qty": 7, "price": 104.36}, {"set": "SWSH: Sword & Shield Promo Cards (SWSD)", "num": "SWSH195", "name": "Leafeon VSTAR", "qty": 14, "price": 2.81}, {"set": "SWSH: Sword & Shield Promo Cards (SWSD)", "num": "SWSH197", "name": "Glaceon VSTAR", "qty": 26, "price": 3.98}, {"set": "SWSH: Sword & Shield Promo Cards (SWSD)", "num": "SWSH201", "name": "Espeon V", "qty": 3, "price": 3.21}, {"set": "SWSH: Sword & Shield Promo Cards (SWSD)", "num": "SWSH214", "name": "Lucario VSTAR", "qty": 18, "price": 2.25}, {"set": "SWSH: Sword & Shield Promo Cards (SWSD)", "num": "SWSH223", "name": "Mewtwo V", "qty": 10, "price": 7.27}, {"set": "SWSH: Sword & Shield Promo Cards (SWSD)", "num": "SWSH258", "name": "Gallade V", "qty": 13, "price": 1.02}, {"set": "SWSH: Sword & Shield Promo Cards (SWSD)", "num": "SWSH260", "name": "Charizard V", "qty": 22, "price": 45.75}, {"set": "SWSH: Sword & Shield Promo Cards (SWSD)", "num": "SWSH261", "name": "Charizard VMAX", "qty": 18, "price": 37.91}, {"set": "SWSH: Sword & Shield Promo Cards (SWSD)", "num": "SWSH262", "name": "Charizard VSTAR", "qty": 58, "price": 68.14}, {"set": "SWSH: Sword & Shield Promo Cards (SWSD)", "num": "SWSH281", "name": "Regidrago V", "qty": 15, "price": 0.81}, {"set": "Shining Fates (SHF)", "num": "", "name": "Ball Guy (Full Art)", "qty": 42, "price": 3.97}, {"set": "Shining Fates (SHF)", "num": "", "name": "Crobat VMAX", "qty": 19, "price": 1.59}, {"set": "Shining Fates (SHF)", "num": "", "name": "Dhelmise VMAX", "qty": 41, "price": 1.52}, {"set": "Shining Fates (SHF)", "num": "", "name": "Rusted Sword", "qty": 28, "price": 0.14}, {"set": "Shining Fates (SHF)", "num": "", "name": "Rusted Shield", "qty": 64, "price": 0.05}, {"set": "Shining Fates: Shiny Vault (SHFSV)", "num": "", "name": "Morpeko", "qty": 8, "price": 21.39}, {"set": "Shining Fates: Shiny Vault (SHFSV)", "num": "", "name": "Milcery", "qty": 4, "price": 6.91}, {"set": "Shining Fates: Shiny Vault (SHFSV)", "num": "", "name": "Cinderace", "qty": 15, "price": 6.5}, {"set": "Shining Fates: Shiny Vault (SHFSV)", "num": "", "name": "Dedenne", "qty": 4, "price": 5.86}, {"set": "Shining Fates: Shiny Vault (SHFSV)", "num": "", "name": "Ducklett", "qty": 4, "price": 4.8}, {"set": "Shining Fates: Shiny Vault (SHFSV)", "num": "", "name": "Grimmsnarl VMAX", "qty": 12, "price": 3.94}, {"set": "Shining Fates: Shiny Vault (SHFSV)", "num": "", "name": "Toxtricity VMAX", "qty": 4, "price": 3.72}, {"set": "Shining Fates: Shiny Vault (SHFSV)", "num": "", "name": "Dartrix", "qty": 17, "price": 3.59}, {"set": "Shining Fates: Shiny Vault (SHFSV)", "num": "", "name": "Rillaboom VMAX", "qty": 7, "price": 2.15}, {"set": "Shining Fates: Shiny Vault (SHFSV)", "num": "", "name": "Blipbug", "qty": 11, "price": 1.98}, {"set": "Shining Fates: Shiny Vault (SHFSV)", "num": "", "name": "Centiskorch VMAX", "qty": 9, "price": 1.95}, {"set": "Shining Fates: Shiny Vault (SHFSV)", "num": "", "name": "Grimmsnarl V", "qty": 3, "price": 1.69}, {"set": "Shining Fates: Shiny Vault (SHFSV)", "num": "", "name": "Rillaboom V", "qty": 9, "price": 1.56}, {"set": "Shining Fates: Shiny Vault (SHFSV)", "num": "", "name": "Centiskorch V", "qty": 9, "price": 1.4}, {"set": "Shining Fates: Shiny Vault (SHFSV)", "num": "", "name": "Polteageist", "qty": 6, "price": 1.36}, {"set": "Shining Legends (SHL)", "num": "", "name": "Shining Jirachi", "qty": 9, "price": 34.58}, {"set": "Shining Legends (SHL)", "num": "", "name": "Latios", "qty": 9, "price": 1.45}, {"set": "Steam Siege (STS)", "num": "XY", "name": "M Gardevoir EX", "qty": 2, "price": 24.15}, {"set": "Steam Siege (STS)", "num": "XY", "name": "Professor Sycamore", "qty": 1, "price": 14.18}, {"set": "Team Up (SM9)", "num": "SM", "name": "Magikarp & Wailord GX (Alternate Full Art)", "qty": 4, "price": 896.86}, {"set": "Team Up (SM9)", "num": "SM", "name": "Gengar & Mimikyu GX", "qty": 13, "price": 385.89}, {"set": "Team Up (SM9)", "num": "SM", "name": "Psyduck", "qty": 11, "price": 1.42}, {"set": "Team Up (SM9)", "num": "SM", "name": "Magikarp", "qty": 28, "price": 0.52}, {"set": "Team Up (SM9)", "num": "SM", "name": "Lightning Energy (2019 Unnumbered)", "qty": 17, "price": 0.21}, {"set": "Trading Card Game Classic (CL)", "num": "", "name": "Lugia ex", "qty": 10, "price": 1.49}, {"set": "Trick or Trade BOOster Bundle (TTBB)", "num": "", "name": "Darkrai", "qty": 193, "price": 0.27}, {"set": "Ultra Prism (SM05)", "num": "SM", "name": "Lopunny", "qty": 45, "price": 0.43}, {"set": "Unbroken Bonds (SM10)", "num": "SM", "name": "Pheromosa & Buzzwole GX (192) (Alternate Full Art)", "qty": 4, "price": 92.46}, {"set": "Unbroken Bonds (SM10)", "num": "SM", "name": "Reshiram & Charizard GX", "qty": 10, "price": 58.1}, {"set": "Unbroken Bonds (SM10)", "num": "SM", "name": "Frogadier", "qty": 10, "price": 0.26}, {"set": "Unified Minds (SM11)", "num": "SM", "name": "Misty's Favor (Full Art)", "qty": 4, "price": 372.92}, {"set": "WoTC Promo (PR)", "num": "", "name": "Entei", "qty": 13, "price": 28.74}, {"set": "XY Promos (PR)", "num": "XY110", "name": "Mew", "qty": 4, "price": 162.02}];
 const ALL_SETS    = ["Alternate Art Promos (PR)", "Ancient Origins (AOR)", "BREAKpoint (BKP)", "BREAKthrough (BKT)", "Base Set (BS)", "Battle Academy 2022 (BA22)", "Celebrations (CLB)", "Celebrations: Classic Collection (CCC)", "Celestial Storm (CES)", "Champion's Path (CHP)", "Cosmic Eclipse (SM12)", "Crimson Invasion (SM04)", "Crown Zenith (CRZ)", "Crown Zenith: Galarian Gallery (CRZ:GG)", "Detective Pikachu (DEP)", "Dragon Majesty (DRM)", "Dragons Exalted (DRX)", "Evolutions (EVO)", "First Partner Collection 2026", "Generations (GEN)", "Generations: Radiant Collection (GEN)", "Guardians Rising (SM02)", "Hidden Fates (HIF)", "Hidden Fates: Shiny Vault (HIF:SV)", "Jungle (JU)", "Legendary Treasures: Radiant Collection (LTR)", "Lost Thunder (SM8)", "ME01: Mega Evolution (MEG)", "ME02: Phantasmal Flames (PFL)", "ME03: Perfect Order (POR)", "ME04: Chaos Rising (CRI)", "ME05: Pitch Black (ME05)", "ME05: Pitch Black (PBL)", "ME: 30th Celebration (30C)", "ME: 30th Celebration Classic Collection (30C)", "ME: Ascended Heroes (ASC)", "ME: Mega Evolution Promo (MEP)", "Miscellaneous Cards & Products (MCAP)", "Neo Genesis (N1)", "Pokemon GO (PGO)", "Primal Clash (PRC)", "Roaring Skies (ROS)", "SM Base Set (SM01)", "SM Promos (SMP)", "SV01: Scarlet & Violet Base Set (SV01)", "SV01: Scarlet & Violet Base Set (SV1)", "SV01: Scarlet & Violet Base Set (SVI)", "SV02: Paldea Evolved (PAL)", "SV02: Paldea Evolved (SV02)", "SV03: Obsidian Flames (OBF)", "SV03: Obsidian Flames (SV03", "SV03: Obsidian Flames (SV03)", "SV04: Paradox Rift (PAR)", "SV04: Paradox Rift (SV04)", "SV05: Temporal Forces (TEF)", "SV06: Twilight Masquerade (TWM)", "SV07: Stellar Crown (SV07)", "SV08: Surging Sparks (SV08)", "SV09: Journey Together", "SV10: Destined Rivals (DRI)", "SV: Black Bolt (BLK)", "SV: Paldean Fates (PAF)", "SV: Prismatic Evolutions", "SV: Prismatic Evolutions (PRE)", "SV: Scarlet & Violet 151 (MEW)", "SV: Scarlet & Violet Promo Cards (SVP)", "SV: Scarlet and Violet 151 (MEW)", "SV: Shrouded Fable (SFA)", "SV: White Flare (WHT)", "SWSH01: Sword & Shield Base Set (SWSH01)", "SWSH02: Rebel Clash (SWSH02)", "SWSH03: Darkness Ablaze (SWSH03)", "SWSH04: Vivid Voltage (SWSH04)", "SWSH05: Battle Styles (SWSH05)", "SWSH06: Chilling Reign (SWSH06)", "SWSH07: Evolving Skies (SWSH07)", "SWSH08: Fusion Strike (SWSH08)", "SWSH09: Brilliant Stars (SWSH09)", "SWSH09: Brilliant Stars Trainer Gallery (SWSH09:TG)", "SWSH10: Astral Radiance (SWSH10)", "SWSH10: Astral Radiance Trainer Gallery (SWSH10:TG)", "SWSH11: Lost Origin (SWSH11)", "SWSH11: Lost Origin Trainer Gallery (SWSH11: TG)", "SWSH12: Silver Tempest (SWSH12)", "SWSH12: Silver Tempest Trainer Gallery (SWSH12: TG)", "SWSH: Crown Zenith: Galarian Gallery (CRZ:GG)", "SWSH: Sword & Shield Promo Cards (SWSD)", "Shining Fates (SHF)", "Shining Fates: Shiny Vault (SHFSV)", "Shining Legends (SHL)", "Steam Siege (STS)", "Team Up (SM9)", "Trading Card Game Classic (CL)", "Trick or Trade BOOster Bundle (TTBB)", "Ultra Prism (SM05)", "Unbroken Bonds (SM10)", "Unified Minds (SM11)", "WoTC Promo (PR)", "XY Promos (PR)"];
+
+// Cart: key = name+set, value = {record, qty}
+const cart = {};
 
 // Populate set dropdown
 const setFilter = document.getElementById('set-filter');
@@ -116,111 +251,298 @@ ALL_SETS.forEach(s => {
   setFilter.appendChild(o);
 });
 
-let currentSortCol = null;
-let currentSortDir = -1;
+let currentSortCol = null, currentSortDir = -1;
 
 function cycleSortCol(col) {
   if (currentSortCol === col) currentSortDir *= -1;
-  else { currentSortCol = col; currentSortDir = col === 'name' || col === 'set' ? 1 : -1; }
-  // Map col to sort-select
-  const map = {price:'price-desc',qty:'qty-desc',name:'name-asc',set:'set-num',num:'set-num'};
-  document.getElementById('sort-select').value = map[col] || 'set-num';
+  else { currentSortCol = col; currentSortDir = (col === 'name' || col === 'set') ? 1 : -1; }
   applyFilters(true);
 }
 
+function cartKey(r) { return r.name + '||' + r.set + '||' + r.num; }
+
 function applyFilters(fromHeader) {
-  const q       = document.getElementById('search').value.toLowerCase().trim();
-  const setVal  = document.getElementById('set-filter').value.toLowerCase();
-  const sortVal = document.getElementById('sort-select').value;
-
-  // If sort changed via dropdown reset header sort
-  if (!fromHeader) { currentSortCol = null; }
-
-  // Update header highlights
-  document.querySelectorAll('thead th').forEach(th => th.classList.remove('sorted'));
+  const q      = document.getElementById('search').value.toLowerCase().trim();
+  const setVal = document.getElementById('set-filter').value.toLowerCase();
+  const sortVal= document.getElementById('sort-select').value;
+  if (!fromHeader) currentSortCol = null;
 
   let rows = ALL_RECORDS.filter(r => {
-    const matchQ   = !q   || r.name.toLowerCase().includes(q) || r.set.toLowerCase().includes(q) || r.num.toLowerCase().includes(q);
-    const matchSet = !setVal || r.set.toLowerCase() === setVal;
-    return matchQ && matchSet;
+    const mq = !q || r.name.toLowerCase().includes(q) || r.set.toLowerCase().includes(q) || r.num.toLowerCase().includes(q);
+    const ms = !setVal || r.set.toLowerCase() === setVal;
+    return mq && ms;
   });
 
-  // Sort
-  const sortKey = currentSortCol ? currentSortCol : sortVal;
-  const dir = currentSortCol ? currentSortDir : -1;
+  const sk = currentSortCol || sortVal;
+  const d  = currentSortCol ? currentSortDir : -1;
+  if (sk==='price-desc'||(sk==='price'&&d===-1)) rows.sort((a,b)=>b.price-a.price);
+  else if (sk==='price-asc'||(sk==='price'&&d===1)) rows.sort((a,b)=>a.price-b.price);
+  else if (sk==='qty-desc'||(sk==='qty'&&d===-1)) rows.sort((a,b)=>b.qty-a.qty);
+  else if (sk==='qty'&&d===1) rows.sort((a,b)=>a.qty-b.qty);
+  else if (sk==='name-asc'||(sk==='name'&&d===1)) rows.sort((a,b)=>a.name.localeCompare(b.name));
+  else if (sk==='name'&&d===-1) rows.sort((a,b)=>b.name.localeCompare(a.name));
+  else rows.sort((a,b)=>{const sc=a.set.localeCompare(b.set);if(sc!==0)return sc;const an=parseInt(a.num)||99999;const bn=parseInt(b.num)||99999;return an-bn;});
 
-  if (sortKey === 'price-desc' || (sortKey === 'price' && dir === -1))
-    rows.sort((a,b) => b.price - a.price);
-  else if (sortKey === 'price-asc' || (sortKey === 'price' && dir === 1))
-    rows.sort((a,b) => a.price - b.price);
-  else if (sortKey === 'qty-desc' || (sortKey === 'qty' && dir === -1))
-    rows.sort((a,b) => b.qty - a.qty);
-  else if (sortKey === 'qty' && dir === 1)
-    rows.sort((a,b) => a.qty - b.qty);
-  else if (sortKey === 'name-asc' || (sortKey === 'name' && dir === 1))
-    rows.sort((a,b) => a.name.localeCompare(b.name));
-  else if (sortKey === 'name' && dir === -1)
-    rows.sort((a,b) => b.name.localeCompare(a.name));
-  else if (sortKey === 'set' || sortKey === 'set-num' || sortKey === 'num') {
-    rows.sort((a,b) => {
-      const sc = a.set.localeCompare(b.set);
-      if (sc !== 0) return sc * (currentSortCol === 'set' ? dir : 1);
-      const an = parseInt(a.num) || 99999;
-      const bn = parseInt(b.num) || 99999;
-      return (an - bn) * (currentSortCol === 'num' ? dir : 1);
-    });
-  }
+  renderTable(rows, sk);
 
-  renderTable(rows, sortKey);
-
-  // Stats
-  const totalVal = rows.reduce((s,r) => s + r.price * r.qty, 0);
+  const tv = rows.reduce((s,r)=>s+r.price*r.qty,0);
   document.getElementById('disp-cards').textContent = rows.length;
-  const visibleSets = new Set(rows.map(r => r.set));
-  document.getElementById('disp-sets').textContent = visibleSets.size;
-  document.getElementById('disp-value').textContent = rows.length ? '$' + totalVal.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—';
-  document.getElementById('match-count').textContent = q || setVal ? rows.length + ' result' + (rows.length !== 1 ? 's' : '') : '';
-  document.getElementById('no-results').style.display = rows.length ? 'none' : 'block';
+  document.getElementById('disp-sets').textContent  = new Set(rows.map(r=>r.set)).size;
+  document.getElementById('disp-value').textContent = rows.length ? '$'+tv.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—';
+  document.getElementById('match-count').textContent = (q||setVal) ? rows.length+' result'+(rows.length!==1?'s':'') : '';
+  document.getElementById('no-results').style.display = rows.length?'none':'block';
 }
 
-function renderTable(rows, sortKey) {
-  const tbody = document.getElementById('tbody');
-  const isGroupedBySet = sortKey === 'set-num' || sortKey === 'set' || sortKey === 'num';
-  let prevSet = null;
-  let html = '';
-
+function renderTable(rows, sk) {
+  const grouped = sk==='set-num'||sk==='set'||sk==='num'||sk==='set-num';
+  let prevSet=null, html='';
   rows.forEach(r => {
-    const isFirstOfSet = isGroupedBySet && r.set !== prevSet;
-    if (isGroupedBySet) prevSet = r.set;
-
-    const setCell = isGroupedBySet
-      ? (isFirstOfSet ? `<span class="set-label">${escHtml(r.set)}</span>` : '')
-      : `<span class="set-label">${escHtml(r.set)}</span>`;
-
-    const divClass = isFirstOfSet && isGroupedBySet ? ' class="set-divider"' : '';
-
-    const priceColor = r.price >= 500 ? 'var(--red)' : r.price >= 100 ? 'var(--yellow)' : r.price > 0 ? 'var(--text)' : 'var(--muted)';
-    const priceStr   = r.price > 0 ? '$' + r.price.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—';
-    const qtyColor   = r.qty >= 10 ? 'var(--green)' : r.qty >= 5 ? 'var(--gold)' : 'var(--text)';
-    const numStr     = r.num || '—';
-
-    html += `<tr${divClass}>
+    const k = cartKey(r);
+    const inCart = false; // button resets via timer, not re-render
+    const isFirst = grouped && r.set !== prevSet;
+    if (grouped) prevSet = r.set;
+    const setCell = grouped ? (isFirst?`<span class="set-label">${esc(r.set)}</span>`:'') : `<span class="set-label">${esc(r.set)}</span>`;
+    const dc = isFirst&&grouped?' class="set-divider"':'';
+    const pc = r.price>=500?'var(--red)':r.price>=100?'var(--yellow)':'var(--text)';
+    const pw = r.price>=100?'700':'400';
+    const ps = r.price>0?'$'+r.price.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}):'—';
+    const qc = r.qty>=10?'var(--green)':r.qty>=5?'var(--gold)':'var(--text)';
+    html += `<tr${dc}>
       <td class="td-set">${setCell}</td>
-      <td class="td-num">${numStr}</td>
-      <td class="td-name">${escHtml(r.name)}</td>
-      <td class="td-price" style="color:${priceColor};font-weight:${r.price>=100?'700':'400'}">${priceStr}</td>
-      <td class="td-qty" style="color:${qtyColor}">${r.qty || '—'}</td>
+      <td class="td-num">${r.num||'—'}</td>
+      <td class="td-name">${esc(r.name)}</td>
+      <td class="td-price" style="color:${pc};font-weight:${pw}">${ps}</td>
+      <td class="td-qty" style="color:${qc}">${r.qty||'—'}</td>
+      <td class="td-add">
+        <div class="add-row">
+          <input class="qty-input" type="number" min="1" max="${r.qty||99}" value="1" id="qi-${k.replace(/[^a-z0-9]/gi,'_')}">
+          <button class="add-btn" onclick='addToCart(${JSON.stringify(r)})'>+ Add</button>
+        </div>
+      </td>
     </tr>`;
   });
-
-  tbody.innerHTML = html;
+  document.getElementById('tbody').innerHTML = html;
 }
 
-function escHtml(s) {
-  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function showMaxAlert(btn, cardName, max) {
+  // Remove any existing alert
+  const existing = btn.parentNode.querySelector('.max-alert');
+  if (existing) existing.remove();
+  const alert = document.createElement('div');
+  alert.className = 'max-alert';
+  alert.textContent = `Max qty for this card is ${max}`;
+  btn.parentNode.appendChild(alert);
+  clearTimeout(btn._alertTimer);
+  btn._alertTimer = setTimeout(() => alert.remove(), 2000);
 }
 
-// Initial render
+function addToCart(r) {
+  const k = cartKey(r);
+  const qid = 'qi-'+k.replace(/[^a-z0-9]/gi,'_');
+  const inp = document.getElementById(qid);
+  const requested = inp ? parseInt(inp.value)||1 : 1;
+  const max = r.qty || 999;
+  const currentInCart = cart[k] ? cart[k].qty : 0;
+  const btn = inp ? inp.nextElementSibling : null;
+
+  // Check if adding would exceed max
+  if (currentInCart + requested > max) {
+    const canAdd = max - currentInCart;
+    if (canAdd <= 0) {
+      if (btn) showMaxAlert(btn, r.name, max);
+      return;
+    }
+    // Add what we can, then alert
+    cart[k] = cart[k] ? {r, qty: max} : {r, qty: canAdd};
+    if (btn) showMaxAlert(btn, r.name, max);
+  } else {
+    if (cart[k]) cart[k].qty += requested;
+    else cart[k] = {r, qty: requested};
+  }
+
+  renderCart();
+
+  // Flash the button green, then reset after 1.5s
+  if (btn && currentInCart + requested <= max) {
+    btn.textContent = '✓ Added';
+    btn.classList.add('in-cart');
+    clearTimeout(btn._resetTimer);
+    btn._resetTimer = setTimeout(() => {
+      btn.textContent = '+ Add';
+      btn.classList.remove('in-cart');
+    }, 1500);
+  }
+}
+
+function removeFromCart(k) {
+  delete cart[k];
+  renderCart();
+  applyFilters();
+}
+
+function changeQty(k, delta) {
+  if (!cart[k]) return;
+  const max = cart[k].r.qty || 999;
+  cart[k].qty = Math.max(1, Math.min(max, cart[k].qty + delta));
+  renderCart();
+}
+
+function renderCart() {
+  const items = Object.values(cart);
+  const badge = document.getElementById('cart-badge');
+  // total display now in price-breakdown
+  const scroll = document.getElementById('cart-scroll');
+  const empty = document.getElementById('cart-empty');
+
+  badge.textContent = items.length;
+  const tv = items.reduce((s,i)=>s+i.r.price*i.qty,0);
+  updatePriceBreakdown(tv);
+
+  if (!items.length) {
+    scroll.innerHTML = '';
+    scroll.appendChild(Object.assign(document.createElement('div'),{className:'cart-empty',textContent:'Add cards from the list to get started.'}));
+    return;
+  }
+
+  let html='';
+  items.forEach(({r,qty})=>{
+    const k=cartKey(r);
+    const ps=r.price>0?'~$'+(r.price*qty).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}):'';
+    html+=`<div class="cart-item">
+      <div class="ci-name">
+        <div class="ci-card" title="${esc(r.name)}">${esc(r.name)}</div>
+        <div class="ci-set">${esc(r.num?r.num+' · ':'')}${esc(r.set)}</div>
+      </div>
+      <div class="ci-qty-wrap">
+        <button class="ci-qty-btn" onclick="changeQty('${k.replace(/'/g,"\'")}', -1)">−</button>
+        <span class="ci-qty">${qty}</span>
+        <button class="ci-qty-btn" onclick="changeQty('${k.replace(/'/g,"\'")}', 1)">+</button>
+      </div>
+      <span class="ci-price">${ps}</span>
+      <button class="ci-remove" onclick="removeFromCart('${k.replace(/'/g,"\'")}')">✕</button>
+    </div>`;
+  });
+  scroll.innerHTML = html;
+}
+
+function clearCart() {
+  if (!Object.keys(cart).length) return;
+  if (confirm('Clear your entire sell list?')) {
+    Object.keys(cart).forEach(k=>delete cart[k]);
+    renderCart(); applyFilters();
+  }
+}
+
+function buildListText() {
+  const items = Object.values(cart);
+  if (!items.length) return '';
+  const tv = items.reduce((s,i)=>s+i.r.price*i.qty,0);
+  let txt = 'TripleRare Sell List\n';
+  txt += '='.repeat(40)+'\n';
+  items.forEach(({r,qty})=>{
+    const num = r.num ? ' #'+r.num : '';
+    const price = r.price>0?' (~$'+(r.price*qty).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+')':'';
+    txt += `• ${r.name}${num} [${r.set}] × ${qty}${price}\n`;
+  });
+  txt += '='.repeat(40)+'\n';
+  txt += `Total cards: ${items.reduce((s,i)=>s+i.qty,0)}\n`;
+  txt += `Est. market value: $${tv.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}\n`;
+  const pct = payoutMode === 'cash' ? 0.85 : 0.90;
+  const modeLabel = payoutMode === 'cash' ? '85% cash upfront' : '90% consignment';
+  txt += `Est. payout (${modeLabel}): $`+(tv*pct).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  return txt;
+}
+
+function exportCSV() {
+  const items = Object.values(cart);
+  if (!items.length) { alert('Your list is empty!'); return; }
+  const rows = [['Card Name','Number','Set','Quantity','Market Price Each','Est. Total Market']];
+  items.forEach(({r,qty})=>{
+    rows.push([
+      `"${r.name.replace(/"/g,'""')}"`,
+      r.num||'',
+      `"${r.set.replace(/"/g,'""')}"`,
+      qty,
+      r.price>0?'$'+r.price.toFixed(2):'',
+      r.price>0?'$'+(r.price*qty).toFixed(2):''
+    ]);
+  });
+  const tv = items.reduce((s,i)=>s+i.r.price*i.qty,0);
+  rows.push(['','','','','Est. Market Total','$'+tv.toFixed(2)]);
+  const cpct = payoutMode === 'cash' ? 0.85 : 0.90;
+  const cLabel = payoutMode === 'cash' ? 'Est. Payout (85% cash)' : 'Est. Payout (90% consign)';
+  rows.push(['','','','',cLabel,'$'+(tv*cpct).toFixed(2)]);
+  const csv = rows.map(r=>r.join(',')).join('\n');
+  const blob = new Blob([csv],{type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'triplerare_sell_list.csv';
+  a.click();
+}
+
+function openModal() {
+  const items = Object.values(cart);
+  if (!items.length) { alert('Your list is empty — add some cards first!'); return; }
+  document.getElementById('modal-list').textContent = buildListText();
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+
+function copyList() {
+  const txt = document.getElementById('modal-list').textContent;
+  const btn = document.getElementById('copy-list-btn');
+  navigator.clipboard ? navigator.clipboard.writeText(txt).then(()=>flashCopy(btn)) : fallbackCopy(txt,btn);
+}
+
+function fallbackCopy(txt,btn) {
+  const ta=document.createElement('textarea');
+  ta.value=txt;ta.style.cssText='position:fixed;top:-9999px;opacity:0';
+  document.body.appendChild(ta);ta.select();
+  try{document.execCommand('copy');flashCopy(btn);}catch(e){}
+  document.body.removeChild(ta);
+}
+
+function flashCopy(btn) {
+  btn.textContent='Copied!';btn.classList.add('copied');
+  setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied');},2000);
+}
+
+function openIG() {
+  const txt = buildListText();
+  const encoded = encodeURIComponent(txt);
+  // Copy to clipboard then open IG
+  navigator.clipboard ? navigator.clipboard.writeText(txt).catch(()=>{}) : null;
+  window.open('https://www.instagram.com/legalrips/','_blank');
+  alert('Your list has been copied! Paste it in your DM to @LegalRips on Instagram.');
+  return false;
+}
+
+esc = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+let payoutMode = 'consign'; // 'consign' = 90%, 'cash' = 85%
+
+function setPayoutMode(mode) {
+  payoutMode = mode;
+  document.getElementById('opt-consign').classList.toggle('active', mode==='consign');
+  document.getElementById('opt-cash').classList.toggle('active', mode==='cash');
+  document.getElementById('opt-cash').classList.toggle('cash', mode==='cash');
+  const items = Object.values(cart);
+  const tv = items.reduce((s,i)=>s+i.r.price*i.qty,0);
+  updatePriceBreakdown(tv);
+}
+
+function updatePriceBreakdown(tv) {
+  const pct = payoutMode === 'cash' ? 0.85 : 0.90;
+  const label = payoutMode === 'cash' ? 'Est. Payout (85% cash)' : 'Est. Payout (90% consign)';
+  document.getElementById('pb-market').textContent = '$'+tv.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  document.getElementById('pb-payout').textContent = '$'+(tv*pct).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  document.getElementById('pb-payout-label').textContent = label;
+}
+
+// Init
 applyFilters();
 </script>
 </body>
