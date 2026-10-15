@@ -284,6 +284,9 @@ td{padding:6px 10px;vertical-align:middle}
     <div class="stat"><div class="stat-val" id="disp-value">—</div><div class="stat-label">Total Market Value</div></div>
   </div>
 
+  <!-- TOP SETS BANNER -->
+  <div id="top-sets-banner" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:16px"></div>
+
   <div class="legend">
     <div class="leg"><div class="dot" style="background:var(--green)"></div>Max Qty 10+</div>
     <div class="leg"><div class="dot" style="background:var(--gold)"></div>Max Qty 5–9</div>
@@ -483,6 +486,28 @@ function togglePanel(id) {
   });
 }
 
+function renderTopSets(topSets) {
+  const el = document.getElementById('top-sets-banner');
+  if (!topSets.length) { el.style.display = 'none'; return; }
+  const items = topSets.map(([set, s], i) => {
+    const medals = ['🥇','🥈','🥉'];
+    // Clean set name — strip trailing parens abbreviation for display
+    const displaySet = set.replace(/\s*\([^)]+\)\s*$/, '').trim();
+    return `<div style="display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;flex:1;min-width:180px">
+      <span style="font-size:18px">${medals[i]}</span>
+      <div>
+        <div style="font-weight:700;font-size:12px;color:var(--text)">${displaySet}</div>
+        <div style="font-size:11px;color:var(--muted)">${s.cardCount} cards &nbsp;·&nbsp; <span style="color:var(--green);font-weight:600">${s.totalQty} total qty wanted</span></div>
+      </div>
+    </div>`;
+  }).join('');
+  el.innerHTML = `
+    <div style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px">🔥 Most Wanted Sets Right Now</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">${items}</div>
+  `;
+  el.style.display = 'block';
+}
+
 async function loadBuylist() {
   try {
     const res = await fetch('buylist.csv?v=' + Date.now());
@@ -496,7 +521,9 @@ async function loadBuylist() {
       const price = cleanPrice(row['Market Price'] || row['Market Price (subject to change)'] || '');
       const qty   = parseInt(row['Wanted Qty'] || row['Max Qty'] || '0') || 0;
       const print = row['Printing'] || '';
-      if (!name || price < 1.0) return; // skip under $1
+      if (!name) return;
+      if (price < 1.0) return; // skip under $1
+      if (price < 20.0 && qty <= 3) return; // skip low qty + low value
       const { cardName, cardNum, setName } = parseName(name);
       records.push({ name: cardName, num: cardNum, set: setName, qty, price, printing: print });
     });
@@ -510,6 +537,18 @@ async function loadBuylist() {
     ALL_RECORDS = records;
     ALL_SETS = [...new Set(records.map(r => r.set))].sort();
 
+    // Compute top sets by total qty
+    const setStats = {};
+    records.forEach(r => {
+      if (!setStats[r.set]) setStats[r.set] = {totalQty: 0, cardCount: 0};
+      setStats[r.set].totalQty  += r.qty;
+      setStats[r.set].cardCount += 1;
+    });
+    const topSets = Object.entries(setStats)
+      .sort((a, b) => b[1].totalQty - a[1].totalQty)
+      .slice(0, 3);
+    renderTopSets(topSets);
+
     // Populate set dropdown
     const sf = document.getElementById('set-filter');
     ALL_SETS.forEach(s => {
@@ -518,9 +557,26 @@ async function loadBuylist() {
       sf.appendChild(o);
     });
 
-    // Get date from CSV or today
-    const today = new Date().toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'});
-    document.getElementById('meta').textContent = `Updated ${today} · Market prices subject to change`;
+    // Fetch last commit date for buylist.csv from GitHub API
+    try {
+      const ghRes = await fetch('https://api.github.com/repos/triplerare/triplerare.github.io/commits?path=buylist.csv&per_page=1');
+      if (ghRes.ok) {
+        const ghData = await ghRes.json();
+        if (ghData.length > 0) {
+          const commitDate = new Date(ghData[0].commit.committer.date);
+          const formatted = commitDate.toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric', hour:'numeric', minute:'2-digit'});
+          document.getElementById('meta').textContent = `Last updated ${formatted} · Market prices subject to change`;
+        } else {
+          document.getElementById('meta').textContent = `Market prices subject to change`;
+        }
+      } else {
+        throw new Error('GitHub API error');
+      }
+    } catch(e) {
+      // Fallback to today's date if API fails
+      const today = new Date().toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'});
+      document.getElementById('meta').textContent = `Updated ${today} · Market prices subject to change`;
+    }
 
     document.getElementById('loading').style.display = 'none';
     document.getElementById('main-table').style.display = '';
