@@ -206,7 +206,7 @@ td{padding:6px 10px;vertical-align:middle}
       </button>
       <button class="tcg-btn" onclick="selectTCG('riftbound')">
         <span class="tcg-icon">⚔️</span>
-        <span class="tcg-name">Riftbound</span>
+        <span class="tcg-name">Riftbound / MTG</span>
         <span class="tcg-rate">85–95% · Very Selective</span>
         <span class="tcg-badge">Buying Select</span>
       </button>
@@ -565,7 +565,7 @@ td{padding:6px 10px;vertical-align:middle}
 </div>
 
 <script>
-// ─── CSV PARSER ───────────────────────────────
+// --- CSV PARSER ---
 function parseCSV(text) {
   const lines = text.split(/\r?\n/).filter(l => l.trim());
   const headers = parseCSVLine(lines[0]);
@@ -589,7 +589,7 @@ function parseCSVLine(line) {
   return result;
 }
 
-// ─── NAME PARSER ─────────────────────────────
+// --- NAME PARSER -----------------------------
 function parseName(fullName) {
   fullName = fullName.replace(/100% market\s*$/i, '').trim();
   const parts = fullName.split(' - ').map(p => p.trim());
@@ -614,7 +614,7 @@ function numSortKey(n) {
   return m ? parseInt(m[1]) : 999999;
 }
 
-// ─── STATE ────────────────────────────────────
+// --- STATE ------------------------------------
 let ALL_RECORDS = [];
 let ALL_SETS    = [];
 let _allRecordsByTCG = {};
@@ -623,7 +623,7 @@ let payoutMode  = 'consign';
 let sortCol     = null;
 let sortDir     = -1;
 
-// ─── LOAD CSV ────────────────────────────────
+// --- LOAD CSV --------------------------------
 function togglePanel(id) {
   const panels = ['psa','cgc','trade','unlisted'];
   panels.forEach(p => {
@@ -645,7 +645,7 @@ function renderTopSets(topSets) {
   if (!topSets.length) { el.style.display = 'none'; return; }
   const items = topSets.map(([set, s], i) => {
     const medals = ['🥇','🥈','🥉'];
-    // Clean set name — strip trailing parens abbreviation for display
+    // Clean set name - strip trailing parens abbreviation for display
     const displaySet = set.replace(/\s*\([^)]+\)\s*$/, '').trim();
     return `<div style="display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;flex:1;min-width:180px">
       <span style="font-size:18px">${medals[i]}</span>
@@ -712,7 +712,7 @@ async function loadBuylist() {
     // Parse CSV into pre-filtered records by TCG
     _allRecordsByTCG = {};
     const rows = parseCSV(text);
-    const TCG_MAP = {'Pokémon':'pokemon','One Piece':'onepiece','Lorcana':'lorcana'};
+    const TCG_MAP = {'Pokémon':'pokemon','One Piece':'onepiece','Lorcana':'lorcana','Other':'riftbound'};
     rows.forEach(row => {
       const name  = row['Name'] || '';
       const price = cleanPrice(row['Market Price'] || row['Market Price (subject to change)'] || '');
@@ -759,7 +759,7 @@ async function loadBuylist() {
       document.getElementById('loading').style.display = 'none';
       document.getElementById('main-table').style.display = 'none';
       document.getElementById('no-results').style.display = 'block';
-      document.getElementById('no-results').innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted)"><div style="font-size:32px;margin-bottom:12px">🚧</div><strong style="color:var(--text);display:block;margin-bottom:6px">No buylist available yet</strong>We're still building our ' + (tcgLabels[selectedTCG]||'') + ' buylist — check back soon or <a href=\'https://www.instagram.com/legalrips/\' target=\'_blank\' style=\'color:var(--blue)\'>DM us on Instagram</a> for a custom offer.</div>';
+      document.getElementById('no-results').innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted)"><div style="font-size:32px;margin-bottom:12px">🚧</div><strong style="color:var(--text);display:block;margin-bottom:6px">No buylist available yet</strong>We are still building our ' + (tcgLabels[selectedTCG]||'') + ' buylist - check back soon or <a href=\'https://www.instagram.com/legalrips/\' target=\'_blank\' style=\'color:var(--blue)\'>DM us on Instagram</a> for a custom offer.</div>';
       return;
     }
 
@@ -802,7 +802,7 @@ async function loadBuylist() {
   }
 }
 
-// ─── FILTERS & SORT ──────────────────────────
+// --- FILTERS & SORT --------------------------
 function cycleSortCol(col) {
   if (sortCol === col) sortDir *= -1;
   else { sortCol = col; sortDir = (col === 'name' || col === 'set') ? 1 : -1; }
@@ -836,12 +836,12 @@ function applyFilters(fromHeader) {
   const tv = rows.reduce((s,r)=>s+r.price*r.qty,0);
   document.getElementById('disp-cards').textContent = rows.length;
   document.getElementById('disp-sets').textContent  = new Set(rows.map(r=>r.set)).size;
-  document.getElementById('disp-value').textContent = rows.length ? '$'+tv.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—';
+  document.getElementById('disp-value').textContent = rows.length ? '$'+tv.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) : '-';
   document.getElementById('match-count').textContent = (q||setVal) ? rows.length+' result'+(rows.length!==1?'s':'') : '';
   document.getElementById('no-results').style.display = rows.length ? 'none' : 'block';
 }
 
-// ─── TABLE RENDER ────────────────────────────
+// --- TABLE RENDER ----------------------------
 // Store rendered rows for lookup by index
 let _renderedRows = [];
 
@@ -856,14 +856,14 @@ function renderTable(rows, sk) {
     const dc = isFirst && grouped ? ' class="set-divider"' : '';
     const pc = r.price>=500?'var(--red)':r.price>=100?'var(--yellow)':'var(--text)';
     const pw = r.price>=100?'700':'400';
-    const ps = r.price>0 ? '$'+r.price.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—';
+    const ps = r.price>0 ? '$'+r.price.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) : '-';
     const qc = r.qty>=10?'var(--green)':r.qty>=5?'var(--gold)':'var(--text)';
     h += `<tr${dc}>
       <td class="td-set">${setCell}</td>
-      <td class="td-num">${r.num||'—'}</td>
+      <td class="td-num">${r.num||'-'}</td>
       <td class="td-name">${esc(r.name)}</td>
       <td class="td-price" style="color:${pc};font-weight:${pw}">${ps}</td>
-      <td class="td-qty" style="color:${qc}">${r.qty||'—'}</td>
+      <td class="td-qty" style="color:${qc}">${r.qty||'-'}</td>
       <td class="td-add">
         <div class="add-row">
           <input class="qty-input" type="number" min="1" max="${r.qty||99}" value="1">
@@ -875,7 +875,7 @@ function renderTable(rows, sk) {
   document.getElementById('tbody').innerHTML = h;
 }
 
-// ─── CART ────────────────────────────────────
+// --- CART ------------------------------------
 function cartKey(r) { return r.name+'||'+r.set+'||'+r.num; }
 
 function showMaxAlert(btn, max) {
@@ -967,7 +967,7 @@ function renderCart() {
   }).join('');
 }
 
-// ─── PAYOUT ──────────────────────────────────
+// --- PAYOUT ----------------------------------
 function setPayoutMode(mode) {
   payoutMode = mode;
   ['consign','cash'].forEach(m => {
@@ -988,12 +988,12 @@ function updatePriceBreakdown(tv) {
   document.getElementById('pb-payout-label').textContent = label;
 }
 
-// ─── MODALS ──────────────────────────────────
+// --- MODALS ----------------------------------
 function openListModal() { renderListModal(); document.getElementById('list-modal').classList.add('open'); }
 function closeListModal() { document.getElementById('list-modal').classList.remove('open'); }
 function openSubmitModal() {
   const items = Object.values(cart);
-  if (!items.length) { alert('Your list is empty — add some cards first!'); return; }
+  if (!items.length) { alert('Your list is empty - add some cards first!'); return; }
   document.getElementById('modal-list').textContent = buildListText();
   document.getElementById('submit-modal').classList.add('open');
 }
@@ -1017,8 +1017,8 @@ function renderListModal() {
   document.getElementById('lm-payout-label').textContent=`Est. Payout (${modeLabel})`;
   let h='<table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="border-bottom:1px solid var(--border)"><th style="text-align:left;padding:5px 8px;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px">Card</th><th style="text-align:right;padding:5px 8px;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px">Qty</th><th style="text-align:right;padding:5px 8px;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px">Market</th><th style="text-align:right;padding:5px 8px;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px">Payout</th></tr></thead><tbody>';
   items.forEach(({r,qty})=>{
-    const mkt=r.price>0?'$'+(r.price*qty).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}):'—';
-    const pay=r.price>0?'$'+(r.price*qty*pct).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}):'—';
+    const mkt=r.price>0?'$'+(r.price*qty).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}):'-';
+    const pay=r.price>0?'$'+(r.price*qty*pct).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}):'-';
     const num=r.num?` <span style="color:var(--gold);font-family:monospace;font-size:10px">#${r.num}</span>`:'';
     h+=`<tr style="border-bottom:1px solid rgba(42,47,69,0.3)"><td style="padding:6px 8px"><div style="font-weight:600;color:var(--text)">${esc(r.name)}${num}</div><div style="font-size:10px;color:var(--muted)">${esc(r.set)}</div></td><td style="text-align:right;padding:6px 8px;font-family:monospace">${qty}</td><td style="text-align:right;padding:6px 8px;font-family:monospace">${mkt}</td><td style="text-align:right;padding:6px 8px;font-family:monospace;color:var(--green);font-weight:700">${pay}</td></tr>`;
   });
@@ -1026,7 +1026,7 @@ function renderListModal() {
   itemsEl.innerHTML=h;
 }
 
-// ─── EXPORT ──────────────────────────────────
+// --- EXPORT ----------------------------------
 function buildListText() {
   const items = Object.values(cart);
   const tv = items.reduce((s,i)=>s+i.r.price*i.qty,0);
@@ -1080,8 +1080,8 @@ function openIG() {
 
 function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
-// ─── INIT ─────────────────────────────────────
-// Landing page shown by default — buylist loads only after TCG + intent selected
+// --- INIT ---
+// Landing page shown by default - buylist loads only after TCG + intent selected
 </script>
 </body>
 </html>
