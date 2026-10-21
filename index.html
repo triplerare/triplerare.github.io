@@ -306,6 +306,7 @@ td{padding:6px 10px;vertical-align:middle}
       <div>
         <h1 style="margin-bottom:2px">TripleRare AJ</h1>
         <div style="font-size:12px;color:var(--muted);font-weight:500">Best Rates. Fast Cash. Chicago's #1 Buyer for Pokémon</div>
+        <div id="tcg-indicator" style="display:inline-flex;align-items:center;gap:5px;margin-top:4px;background:rgba(79,142,247,0.12);border:1px solid rgba(79,142,247,0.3);color:var(--blue);padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700"></div>
       </div>
     </div>
     <button class="view-list-btn" id="view-list-btn" onclick="openListModal()">
@@ -616,6 +617,7 @@ function numSortKey(n) {
 // ─── STATE ────────────────────────────────────
 let ALL_RECORDS = [];
 let ALL_SETS    = [];
+let _allRecordsByTCG = {};
 let cart        = {};
 let payoutMode  = 'consign';
 let sortCol     = null;
@@ -703,33 +705,38 @@ async function loadBuylist() {
     const res = await fetch('buylist.csv?v=' + Date.now());
     if (!res.ok) throw new Error('Could not load buylist.csv');
     const text = await res.text();
-    const rows = parseCSV(text);
 
-    const records = [];
+    // Parse CSV into pre-filtered records by TCG
+    _allRecordsByTCG = {};
+    const rows = parseCSV(text);
+    const TCG_MAP = {'Pokémon':'pokemon','One Piece':'onepiece','Lorcana':'lorcana'};
     rows.forEach(row => {
       const name  = row['Name'] || '';
       const price = cleanPrice(row['Market Price'] || row['Market Price (subject to change)'] || '');
       const qty   = parseInt(row['Wanted Qty'] || row['Max Qty'] || '0') || 0;
-      const print = row['Printing'] || '';
-      if (!name) return;
-      if (price < 1.0) return; // skip under $1
-      if (price < 20.0 && qty <= 3) return; // skip low qty + low value
+      const cat   = row['Category'] || '';
+      const tcg   = TCG_MAP[cat];
+      if (!name || !tcg) return;
+      if (price < 1.0) return;
+      if (price < 20.0 && qty <= 3) return;
       const { cardName, cardNum, setName } = parseName(name);
-      records.push({ name: cardName, num: cardNum, set: setName, qty, price, printing: print });
+      if (!_allRecordsByTCG[tcg]) _allRecordsByTCG[tcg] = [];
+      _allRecordsByTCG[tcg].push({ name: cardName, num: cardNum, set: setName, qty, price, tcg });
     });
 
-    // Sort by set then number
-    records.sort((a, b) => {
-      const sc = a.set.localeCompare(b.set);
-      return sc !== 0 ? sc : numSortKey(a.num) - numSortKey(b.num);
+    // Sort each TCG by set then number
+    Object.values(_allRecordsByTCG).forEach(arr => {
+      arr.sort((a, b) => { const sc = a.set.localeCompare(b.set); return sc !== 0 ? sc : numSortKey(a.num) - numSortKey(b.num); });
     });
 
-    ALL_RECORDS = records;
-    ALL_SETS = [...new Set(records.map(r => r.set))].sort();
+    // Load records for the selected TCG
+    const tcgRecords = _allRecordsByTCG[selectedTCG] || [];
+    ALL_RECORDS = tcgRecords;
+    ALL_SETS = [...new Set(tcgRecords.map(r => r.set))].sort();
 
     // Compute top sets by total qty
     const setStats = {};
-    records.forEach(r => {
+    tcgRecords.forEach(r => {
       if (!setStats[r.set]) setStats[r.set] = {totalQty: 0, cardCount: 0};
       setStats[r.set].totalQty  += r.qty;
       setStats[r.set].cardCount += 1;
@@ -738,6 +745,20 @@ async function loadBuylist() {
       .sort((a, b) => b[1].totalQty - a[1].totalQty)
       .slice(0, 3);
     renderTopSets(topSets);
+
+    // Show which TCG buylist is loaded
+    const tcgLabels = {'pokemon':'🎴 Pokémon Buylist','onepiece':'☠️ One Piece Buylist','lorcana':'🕯️ Lorcana Buylist','riftbound':'⚔️ Riftbound Buylist'};
+    const indicator = document.getElementById('tcg-indicator');
+    if (indicator) indicator.textContent = tcgLabels[selectedTCG] || '';
+
+    // If no cards for this TCG, show friendly message
+    if (!tcgRecords.length) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('main-table').style.display = 'none';
+      document.getElementById('no-results').style.display = 'block';
+      document.getElementById('no-results').innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted)"><div style="font-size:32px;margin-bottom:12px">🚧</div><strong style="color:var(--text);display:block;margin-bottom:6px">No buylist available yet</strong>We're still building our ' + (tcgLabels[selectedTCG]||'') + ' buylist — check back soon or <a href=\'https://www.instagram.com/legalrips/\' target=\'_blank\' style=\'color:var(--blue)\'>DM us on Instagram</a> for a custom offer.</div>';
+      return;
+    }
 
     // Populate set dropdown
     const sf = document.getElementById('set-filter');
