@@ -1,0 +1,3 @@
+Company,Rate,Min Grade,Price Cap,Bulk Rate,Notes
+PSA,90,7,200,,Rate = % of market price. Min Grade = lowest PSA grade you buy. Price Cap = highest market value in dollars. Leave a cell blank to hide that line on the site.
+CGC,75-80,,200,$3-$8,Ranges are fine (75-80). Bulk Rate = dollars per slab when a card has no sales comps. Leave a cell blank to hide that line on the site.
