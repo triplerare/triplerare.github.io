@@ -1331,7 +1331,7 @@ tbody tr.set-divider:first-child td{border-top:0}
       <ol class="sl-steps">
         <li><b>Add the cert number</b> from the PSA label.</li>
         <li><b>Tap Look up on PSA</b> and read the estimate or recent sales on the cert page.</li>
-        <li><b>Type that value in</b>, then submit your list. I reach out within 12 hours.</li>
+        <li id="sl-step3"><b>Type that value in</b>, then copy your list and DM it to me on Instagram or Discord.</li>
       </ol>
       <form class="sl-add" id="sl-form" autocomplete="off" novalidate>
         <div class="sl-add-row">
@@ -2771,11 +2771,14 @@ document.addEventListener('keydown', e => {
       else if (!fits) msg = '<p class="sl-nudge">Add ' + esc(fmtMoney(cutv)) + ' and below slabs worth ' + esc(fmtMoney(B)) + ' or more in total and the whole list pays <b>' + esc(pctText(SLAB_CFG.bonusRate)) + '</b> instead of ' + esc(pctText(SLAB_CFG.baseRate)) + '.</p>';
       else msg = '<p class="sl-nudge' + (pc >= 70 ? ' is-near' : '') + '">' + (pc >= 70 ? '<b>So close.</b> ' : '') + '<b>' + esc(money(gap)) + ' more</b> in ' + esc(fmtMoney(cutv)) + '-and-below slabs unlocks <b>' + esc(pctText(SLAB_CFG.bonusRate)) + '</b> on the whole list. At ' + esc(fmtMoney(B)) + ' that is ' + esc(money(atB)) + ' instead of ' + esc(money(atBase)) + '. Got more slabs? Add them.</p>';
     }
-    var acts = n ? '<div class="sl-actions"><button type="button" class="btn btn-primary" data-act="submit"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg>Submit my list</button>' +
-      (miss ? '<p class="sl-miss">' + miss + ' slab' + (miss === 1 ? ' needs' : 's need') + ' a market value and grade before you can submit.</p>' : '') +
-      '<div class="sl-actions-2"><button type="button" class="btn btn-ghost" data-act="copy">Copy list</button><button type="button" class="btn btn-ghost" data-act="clear" id="sl-clear">' + (clearArmed ? 'Tap again to clear' : 'Clear list') + '</button></div></div>' : '';
+    var live = !!endpoint();
+    var acts = n ? '<div class="sl-actions">' + (live
+      ? '<button type="button" class="btn btn-primary" data-act="submit"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg>Submit my list</button>'
+      : '<button type="button" class="btn btn-primary" data-act="copy"><svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg>Copy my list</button><p class="sl-sfine" style="margin:0">Then paste it in a DM to me on Instagram or Discord, or in the Discord server.</p>') +
+      (miss ? '<p class="sl-miss">' + miss + ' slab' + (miss === 1 ? ' needs' : 's need') + ' a market value and grade before you can ' + (live ? 'submit' : 'copy your list') + '.</p>' : '') +
+      '<div class="sl-actions-2">' + (live ? '<button type="button" class="btn btn-ghost" data-act="copy">Copy list</button>' : '') + '<button type="button" class="btn btn-ghost" data-act="clear" id="sl-clear">' + (clearArmed ? 'Tap again to clear' : 'Clear list') + '</button></div></div>' : '';
     var fine = '<p class="sl-sfine">Estimates only, not offers. Prices are always subject to change. Contact me to confirm the numbers.</p>';
-    var sig = head + rows + meter + msg + acts + fine + chips();
+    var sig = head + rows + meter + msg + acts + fine + chips(live ? 'Prefer to DM?' : 'DM me your list');
     if (sig !== summary.last) { summary.last = sig; el.innerHTML = sig; }
     el.classList.toggle('is-bonus', t.bonus);
     if (t.bonus && !wasBonus && !reduce) { el.classList.remove('boom'); void el.offsetWidth; el.classList.add('boom'); confetti(el, 28, 190, 'big'); }
@@ -2936,7 +2939,7 @@ document.addEventListener('keydown', e => {
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && $('slab-modal').classList.contains('open')) closeSubmit(); });
     setMethod();
   }
-  window.slabListRefresh = function () { $('sl-rules').innerHTML = rulesText(); summary.last = ''; render(); };
+  window.slabListRefresh = function () { $('sl-rules').innerHTML = rulesText(); var st = document.getElementById('sl-step3'); if (st) st.innerHTML = endpoint() ? '<b>Type that value in</b>, then submit your list. I reach out within 12 hours.' : '<b>Type that value in</b>, then copy your list and DM it to me on Instagram or Discord.'; summary.last = ''; render(); };
   // the "Price cap" line of the PSA panel: turn the words Custom quote into a shortcut to that panel
   function linkCustomQuote() {
     var el = $('psa-cap'); if (!el || el.querySelector('button')) return;
