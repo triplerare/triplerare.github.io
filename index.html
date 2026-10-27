@@ -2798,7 +2798,7 @@ document.addEventListener('keydown', e => {
     if (!grade) { say('Pick the PSA grade. It is on the label and I need it.', true); $('sl-grade').focus(); return; }
     if (minGrade() && grade < minGrade()) { say(gradeMsg(), true); $('sl-grade').focus(); return; }
     if (price === null) { say('Enter the estimated market value in dollars, like 45 or 45.50.', true); $('sl-val').focus(); return; }
-    items.push({cert: cert, price: price, grade: grade, celebrated: false});
+    items.unshift({cert: cert, price: price, grade: grade, celebrated: false});
     $('sl-cert').value = ''; $('sl-val').value = ''; $('sl-grade').value = '';
     render(); save();
     say('Added. Keep going with the next one, or submit when you are done.'); $('sl-cert').focus();
@@ -2811,7 +2811,7 @@ document.addEventListener('keydown', e => {
     var sum = function (a) { return a.reduce(function (s, i) { return s + i.price; }, 0); };
     return {cut: cut, lo: lo, hi: hi, loSum: sum(lo), hiSum: sum(hi), all: priced};
   }
-  function line(i) { return i.cert + ' | ' + money(i.price) + (i.grade ? ' | PSA ' + i.grade : ''); }
+  function line(i) { return i.cert + ' | ' + money(i.price) + ' | PSA ' + i.grade + ' | ' + psaUrl(i.cert); }
   function messageText(contact) {
     var g = groups(), t = totals(), L = ['TripleRare slab list (estimates, not offers)'];
     if (contact) L.push('Contact: ' + contact);
