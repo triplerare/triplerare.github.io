@@ -1175,7 +1175,7 @@ tbody tr.set-divider:first-child td{border-top:0}
                 <span class="promo-ends" id="promo-ends" hidden></span>
               </div>
               <p class="promo-what disp" id="promo-what">PSA &amp; One Piece slabs</p>
-              <p class="promo-detail" id="promo-detail">Market value <b>$1&ndash;$100</b> &middot; Minimum $500 total lot for 90%</p>
+              <p class="promo-detail" id="promo-detail">Market value <b>$1&ndash;$100</b> &middot; Minimum $250 total lot for 90%</p>
             </div>
           </aside>
         </div>
@@ -2498,7 +2498,7 @@ const SLAB_RULES = {
   cgc: {rate: '75-80', grade: '', cap: '200', bulk: '$3-$8'}
 };
 // the slab list on the graded page (slabs.js) reads these; they come from the PSA row of rates.csv
-const SLAB_CFG = {minValue: 1, maxValue: 100, minCert: 7, baseRate: 85, bonusRate: 90, bonusMin: 500, submitUrl: '', submitKey: ''};
+const SLAB_CFG = {minValue: 1, maxValue: 100, minCert: 7, baseRate: 85, bonusRate: 90, bonusMin: 250, submitUrl: '', submitKey: ''};
 function applySlabCfg(r) {
   const one = v => { const n = v ? numList(v) : null; return n ? n[0] : null; };
   const pct = v => { const n = v ? numList(v) : null; if (!n) return null; const x = n[n.length - 1]; return !/%/.test(v) && x <= 1 ? x * 100 : x; };
@@ -2550,7 +2550,7 @@ const ratesReady = loadRates();
 // - Ends = a date                   -> shown through the end of that day (Chicago time), then it hides itself
 const OFFER_DEFAULT = {
   show: 'yes', label: 'Limited time offer', rate: '90', applies: 'PSA & One Piece slabs',
-  min: '1', max: '100', ends: '', details: 'Minimum $500 total lot for 90%'
+  min: '1', max: '100', ends: '', details: 'Minimum $250 total lot for 90%'
 };
 const OFFER_COLS = {
   show:    ['show', 'showbanner', 'active', 'enabled', 'live', 'on'],
