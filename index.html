@@ -2220,7 +2220,7 @@ async function markTileAvailability() {
       const tcg = TCG_MAP[row['Category'] || ''];
       const price = cleanPrice(row['Market Price'] || row['Market Price (subject to change)'] || '');
       const qty = parseInt(row['Wanted Qty'] || row['Max Qty'] || '0') || 0;
-      if (!row['Name'] || !tcg || price < 1.0 || (price < 20.0 && qty <= 3)) return;
+      if (!row['Name'] || !tcg || price < (tcg === 'pokemon' ? 0.99 : 1.0) || (price < 20.0 && qty <= 3)) return;
       totals[tcg] += price * qty; seen++;
     });
     if (!seen) return;                                      // empty/odd file: leave every tile open
@@ -2250,7 +2250,7 @@ function recFromRow(row) {
   const qty   = parseInt(row['Wanted Qty'] || row['Max Qty'] || '0') || 0;
   const tcg   = TCG_MAP[row['Category'] || ''];
   if (!name || !tcg) return null;
-  if (price < 1.0) return null;
+  if (price < (tcg === 'pokemon' ? 0.99 : 1.0)) return null;   // Pokemon list goes down to $0.99, other games stop at $1
   if (price < 20.0 && qty <= 3) return null;
   const { cardName, cardNum, setName } = parseName(name);
   const img = safeCardImg(row['Image'] || row['Image URL'] || row['Image Link'] || row['Image Url'] || '');
